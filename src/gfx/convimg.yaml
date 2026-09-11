@@ -1,0 +1,47 @@
+palettes:
+  - name: global_palette
+    images: automatic
+
+converts:
+  - name: sprites
+    palette: global_palette
+    transparent-color-index: 0
+    images:
+      - ship1.png
+      - ship2.png
+      - bg.png
+      - enemy.png
+      - boom1.png
+      - boom2.png
+      - boom3.png
+      - score.png
+      - hiscore.png
+      - lifecounter.png
+      - gameova.png
+      - newhiscore.png
+
+  - name: scorenum
+    palette: global_palette
+    tilesets:
+      tile-width: 5
+      tile-height: 12
+      images:
+        - scorenum.png
+
+  - name: lifenum
+    palette: global_palette
+    tilesets:
+      tile-width: 6
+      tile-height: 10
+      images:
+        - lifenum.png
+
+outputs:
+  - type: c
+    include-file: gfx.h
+    palettes:
+      - global_palette
+    converts:
+      - sprites
+      - scorenum
+      - lifenum

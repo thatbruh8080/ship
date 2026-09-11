@@ -1,0 +1,2152 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_updateDigits
+_updateDigits:
+	ld	hl, -9
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	ld	iy, (ix + 9)
+	ld	de, 5
+	lea	hl, iy + 15
+	ld	(ix - 6), hl
+	ld	bc, 0
+BB0_1:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB0_3
+	ld	hl, (ix - 3)
+	ld	bc, 10
+	call	__idivs
+	ld	(ix - 9), hl
+	ld	bc, -10
+	call	__imulu
+	ld	bc, 0
+	push	de
+	pop	iy
+	ld	de, (ix - 3)
+	add	hl, de
+	lea	de, iy
+	ld	iy, (ix - 6)
+	ld	(iy), hl
+	dec	de
+	lea	iy, iy - 3
+	ld	(ix - 6), iy
+	ld	hl, (ix - 9)
+	ld	(ix - 3), hl
+	jr	BB0_1
+BB0_3:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_loadHighScore
+_loadHighScore:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, _.str
+	ld	de, _.str.1
+	push	de
+	push	hl
+	call	_ti_Open
+	ld	c, a
+	pop	hl
+	pop	hl
+	or	a, a
+	jr	nz, BB1_2
+	ld	hl, 10000
+	ld	iy, (ix + 6)
+	ld	(iy), hl
+	jr	BB1_3
+BB1_2:
+	ld	hl, 3
+	ld	de, 1
+	push	bc
+	push	de
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	ld	(ix - 3), bc
+	call	_ti_Read
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 3)
+	push	hl
+	call	_ti_Close
+	pop	hl
+BB1_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_saveHighScore
+_saveHighScore:
+	ld	hl, -6
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	de, _.str
+	ld	(ix - 3), hl
+	push	de
+	call	_ti_Delete
+	pop	hl
+	ld	hl, _.str.2
+	push	hl
+	ld	hl, _.str
+	push	hl
+	call	_ti_Open
+	ld	e, a
+	pop	hl
+	pop	hl
+	or	a, a
+	jr	z, BB2_2
+	ld	hl, 3
+	ld	bc, 1
+	push	de
+	push	bc
+	push	hl
+	pea	ix - 3
+	ld	(ix - 6), de
+	call	_ti_Write
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 6)
+	push	hl
+	ld	hl, 1
+	push	hl
+	call	_ti_SetArchiveStatus
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 6)
+	push	hl
+	call	_ti_Close
+	pop	hl
+BB2_2:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	ld	hl, -157
+	call	__frameset
+	ld	hl, 10000
+	lea	de, ix - 27
+	ld	(ix - 79), de
+	lea	de, ix - 45
+	ld	(ix - 82), de
+	ld	(ix - 9), hl
+	pea	ix - 9
+	call	_loadHighScore
+	pop	hl
+	ld	(ix - 27), 0
+	ld	hl, (ix - 79)
+	push	hl
+	pop	de
+	inc	de
+	ld	iy, 17
+	lea	bc, iy
+	ldir
+	ld	(ix - 45), 0
+	ld	hl, (ix - 82)
+	push	hl
+	pop	de
+	inc	de
+	lea	bc, iy
+	ldir
+	call	_gfx_Begin
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 24
+	push	hl
+	ld	hl, _global_palette
+	push	hl
+	call	_gfx_SetPalette
+	pop	hl
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetTransparentColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetDraw
+	pop	hl
+	call	_rand
+	ld	iy, -720868
+	ld	bc, 177
+	call	__irems
+	ld	de, 127
+	add	hl, de
+	ld	bc, 0
+	ld	(ix - 123), bc
+	ld	(ix - 51), hl
+	ld	hl, -20
+	ld	(ix - 61), hl
+	ld	hl, 1
+	push	ix
+	ld	de, -154
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	push	ix
+	ld	de, -151
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	(ix - 72), hl
+	push	ix
+	ld	de, -147
+	add	ix, de
+	ld	(ix), bc
+	pop	ix
+	ld	(ix - 95), bc
+	push	ix
+	ld	de, -135
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	(ix - 73), l
+	ld	a, b
+	ld	(ix - 105), a
+	ld	(ix - 92), a
+	ld	(ix - 69), a
+	ld	(ix - 76), bc
+	push	ix
+	ld	de, -129
+	add	ix, de
+	ld	(ix), bc
+	pop	ix
+	push	ix
+	ld	de, -138
+	add	ix, de
+	ld	(ix), bc
+	pop	ix
+	ld	(ix - 114), bc
+	ld	de, 30
+	ld	(ix - 64), de
+	ld	(ix - 52), l
+	ld	(ix - 55), a
+	ld	hl, 3
+	ld	(ix - 111), hl
+	ld	(ix - 104), bc
+	ld	(ix - 120), bc
+	ld	(ix - 58), bc
+	ld	de, 5000
+	ld	(ix - 126), bc
+	ld	(ix - 65), a
+	ld	(ix - 108), bc
+	ld	(ix - 3), de
+	ld	de, -144
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), bc
+	ld	(ix - 68), a
+	ld	(ix - 98), bc
+	ld	hl, 160
+	ld	(ix - 91), hl
+	ld	hl, 218
+	ld	(ix - 48), hl
+	ld	de, (ix - 3)
+BB3_1:
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	bit	6, a
+	jp	nz, BB3_212
+	ld	(ix - 3), de
+	ld	de, -141
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), bc
+	ld	de, (ix - 3)
+	ld	(ix - 88), de
+	call	_kb_Scan
+	ld	hl, (ix - 79)
+	push	hl
+	ld	hl, (ix - 58)
+	push	hl
+	call	_updateDigits
+	pop	hl
+	pop	hl
+	ld	de, (ix - 9)
+	ld	hl, (ix - 82)
+	push	hl
+	ld	bc, -157
+	lea	hl, ix
+	add	hl, bc
+	ld	(hl), de
+	push	de
+	call	_updateDigits
+	pop	hl
+	pop	hl
+	ld	a, (ix - 52)
+	and	a, 1
+	bit	0, a
+	jr	nz, BB3_13
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	e, l
+	ld	a, (ix - 92)
+	and	a, 1
+	ld	l, a
+	ld	a, (ix - 55)
+	and	a, 1
+	bit	5, e
+	jr	z, BB3_13
+	bit	0, l
+	jr	nz, BB3_13
+	bit	0, a
+	jr	nz, BB3_13
+	ld	de, (ix - 111)
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	a, -1
+	jr	z, BB3_8
+	ld	a, 0
+BB3_8:
+	bit	0, a
+	ld	hl, 3
+	ld	(ix - 101), hl
+	jr	nz, BB3_10
+	ld	(ix - 101), de
+BB3_10:
+	bit	0, a
+	ld	hl, 0
+	ld	de, (ix - 58)
+	jr	nz, BB3_12
+	ex	de, hl
+BB3_12:
+	ld	de, -132
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), hl
+	ld	a, 1
+	ld	(ix - 92), a
+	ld	(ix - 69), a
+	ld	hl, 180
+	ld	(ix - 76), hl
+	ld	(ix - 52), a
+	ld	hl, 250
+	ld	(ix - 91), hl
+	ld	hl, 218
+	push	hl
+	pop	bc
+	jr	BB3_14
+BB3_13:
+	ld	hl, (ix - 111)
+	ld	(ix - 101), hl
+	ld	hl, (ix - 58)
+	ld	de, -132
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), hl
+	ld	bc, (ix - 48)
+BB3_14:
+	ld	a, (ix - 69)
+	and	a, 1
+	xor	a, 1
+	ld	hl, (ix - 76)
+	ld	de, 2
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	l, d
+	jp	m, BB3_16
+	ld	l, (ix - 69)
+BB3_16:
+	ld	(ix - 48), bc
+	bit	0, a
+	jr	nz, BB3_18
+	ld	(ix - 69), l
+BB3_18:
+	xor	a, 1
+	ld	l, a
+	ld	c, 23
+	call	__ishl
+	push	hl
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	push	hl
+	pop	de
+	ld	hl, (ix - 76)
+	add	hl, de
+	ld	(ix - 76), hl
+	ld	hl, (ix - 95)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	a, -1
+	jp	p, BB3_20
+	ld	a, 0
+BB3_20:
+	bit	0, a
+	ld	iy, -720866
+	jr	nz, BB3_22
+	ld	hl, 1
+	ld	(ix - 72), hl
+BB3_22:
+	bit	0, a
+	jr	nz, BB3_24
+	or	a, a
+	sbc	hl, hl
+	push	ix
+	ld	bc, -147
+	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+BB3_24:
+	bit	0, a
+	jr	nz, BB3_26
+	or	a, a
+	sbc	hl, hl
+	jr	BB3_27
+BB3_26:
+	ld	hl, (ix - 95)
+	dec	hl
+BB3_27:
+	ld	(ix - 95), hl
+	ld	a, (ix - 52)
+	and	a, 1
+	ld	(ix - 85), a
+	bit	0, a
+	jr	z, BB3_32
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	ld	bc, (ix - 48)
+	push	bc
+	pop	hl
+	ld	de, -2
+	add	hl, de
+	bit	1, a
+	jr	z, BB3_30
+	push	hl
+	pop	bc
+BB3_30:
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	push	bc
+	pop	hl
+	ld	de, 2
+	add	hl, de
+	bit	2, a
+	jr	z, BB3_33
+	push	hl
+	pop	bc
+	jr	BB3_33
+BB3_32:
+	ld	bc, (ix - 48)
+BB3_33:
+	push	bc
+	pop	hl
+	ld	de, 128
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_35
+	ld	bc, 127
+BB3_35:
+	push	bc
+	pop	hl
+	ld	de, 288
+	or	a, a
+	sbc	hl, de
+	jr	c, BB3_37
+	ld	bc, 288
+BB3_37:
+	ld	(ix - 48), bc
+	ld	a, (ix - 92)
+	and	a, 1
+	xor	a, 1
+	ld	hl, (ix - 91)
+	push	hl
+	pop	iy
+	ld	de, -4
+	add	iy, de
+	ld	de, 165
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	e, -1
+	jp	m, BB3_39
+	ld	e, 0
+BB3_39:
+	bit	0, e
+	ld	l, 0
+	ld	bc, (ix - 51)
+	jr	nz, BB3_41
+	ld	l, (ix - 92)
+BB3_41:
+	bit	0, e
+	ld	de, 160
+	jr	nz, BB3_43
+	lea	de, iy
+BB3_43:
+	bit	0, a
+	jr	nz, BB3_45
+	ld	(ix - 92), l
+BB3_45:
+	bit	0, a
+	ld	iy, (ix - 64)
+	jr	nz, BB3_47
+	ld	(ix - 91), de
+BB3_47:
+	bit	0, (ix - 85)
+	jp	z, BB3_51
+	ld	hl, -720878
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, (ix - 68)
+	and	a, 1
+	bit	5, l
+	jr	z, BB3_52
+	bit	0, a
+	jr	nz, BB3_52
+	ld	hl, (ix - 48)
+	ld	de, 7
+	add	hl, de
+	push	ix
+	ld	de, -144
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	hl, (ix - 91)
+	ld	de, -4
+	add	hl, de
+	ld	(ix - 108), hl
+	ld	a, 1
+	ld	(ix - 68), a
+	jr	BB3_54
+BB3_51:
+	ld	a, (ix - 68)
+	and	a, 1
+BB3_52:
+	bit	0, a
+	jr	nz, BB3_54
+	ld	hl, (ix - 108)
+	ld	(ix - 117), hl
+	jr	BB3_57
+BB3_54:
+	ld	(ix - 51), bc
+	ld	bc, (ix - 108)
+	push	bc
+	pop	hl
+	ld	de, -4
+	add	hl, de
+	ld	(ix - 117), hl
+	push	bc
+	pop	hl
+	ld	de, 4
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_56
+	ld	hl, 1
+	ld	(ix - 72), hl
+	dec	hl
+	push	ix
+	ld	de, -147
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	xor	a, a
+	ld	(ix - 68), a
+BB3_56:
+	ld	bc, (ix - 51)
+BB3_57:
+	ld	a, (ix - 73)
+	and	a, 1
+	ld	(ix - 58), a
+	bit	0, a
+	jr	nz, BB3_59
+	ld	(ix - 51), bc
+	jp	BB3_106
+BB3_59:
+	ld	de, -135
+	lea	hl, ix
+	add	hl, de
+	ld	hl, (hl)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jp	nz, BB3_78
+	ld	de, -151
+	lea	hl, ix
+	add	hl, de
+	ld	iy, (hl)
+	add	iy, bc
+	lea	hl, iy
+	ld	de, 128
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	a, -1
+	jp	m, BB3_62
+	ld	a, 0
+BB3_62:
+	bit	0, a
+	ld	de, 127
+	jr	nz, BB3_64
+	lea	de, iy
+BB3_64:
+	bit	0, a
+	ld	bc, 1
+	push	bc
+	pop	iy
+	jr	nz, BB3_66
+	ld	bc, -151
+	lea	hl, ix
+	add	hl, bc
+	ld	iy, (hl)
+BB3_66:
+	push	de
+	pop	hl
+	ld	bc, 288
+	or	a, a
+	sbc	hl, bc
+	ccf
+	sbc	a, a
+	bit	0, a
+	ld	hl, 288
+	ld	(ix - 51), hl
+	jr	nz, BB3_68
+	ld	(ix - 51), de
+BB3_68:
+	bit	0, a
+	ld	hl, -1
+	push	ix
+	ld	bc, -151
+	push	af
+	add	ix, bc
+	pop	af
+	ld	(ix), hl
+	pop	ix
+	jr	nz, BB3_70
+	ld	bc, -151
+	lea	hl, ix
+	add	hl, bc
+	ld	(hl), iy
+BB3_70:
+	ld	iy, (ix - 48)
+	lea	hl, iy
+	ld	de, 16
+	add	hl, de
+	bit	0, (ix - 85)
+	ld	bc, (ix - 114)
+	jr	z, BB3_74
+	ex	de, hl
+	ld	hl, (ix - 51)
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB3_74
+	ld	hl, (ix - 51)
+	ld	de, 16
+	add	hl, de
+	ex	de, hl
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB3_74
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	hl, 15
+	jr	z, BB3_75
+BB3_74:
+	push	bc
+	pop	hl
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	push	bc
+	pop	hl
+	jp	m, BB3_85
+BB3_75:
+	dec	hl
+	ld	(ix - 114), hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	hl, 1
+	jr	z, BB3_77
+	ld	hl, 0
+BB3_77:
+	ld	de, -135
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), hl
+	jp	BB3_86
+BB3_78:
+	ld	hl, (ix - 61)
+	ld	de, 3
+	add	hl, de
+	ld	a, (ix - 69)
+	and	a, 1
+	bit	0, (ix - 85)
+	ld	iy, (ix - 48)
+	ld	(ix - 111), hl
+	jr	z, BB3_83
+	bit	0, a
+	jr	nz, BB3_83
+	push	bc
+	pop	hl
+	ld	de, 2
+	add	hl, de
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	push	bc
+	pop	de
+	ld	bc, 1
+	jp	m, BB3_91
+	ex	de, hl
+	ld	de, -2
+	add	hl, de
+	ex	de, hl
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	bc, -1
+	jp	m, BB3_90
+	ld	bc, 0
+	jr	BB3_90
+BB3_83:
+	bit	0, a
+	jr	nz, BB3_87
+	push	bc
+	pop	de
+	ld	(ix - 3), de
+	ld	de, -154
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+	ld	de, (ix - 3)
+	jr	BB3_91
+BB3_85:
+	or	a, a
+	sbc	hl, hl
+	ld	de, -135
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), hl
+	ld	(ix - 114), hl
+BB3_86:
+	ld	iy, (ix - 64)
+	jp	BB3_106
+BB3_87:
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	push	bc
+	pop	de
+	ld	bc, 2
+	jp	m, BB3_91
+	ex	de, hl
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	bc, -2
+	jp	m, BB3_90
+	ld	de, -154
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+BB3_90:
+	ld	de, (ix - 51)
+BB3_91:
+	push	bc
+	pop	iy
+	add	iy, de
+	lea	hl, iy
+	ld	de, 128
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	a, -1
+	jp	m, BB3_93
+	ld	a, 0
+BB3_93:
+	push	bc
+	pop	hl
+	call	__ineg
+	ld	(ix - 108), hl
+	bit	0, a
+	ld	de, 127
+	jr	nz, BB3_95
+	lea	de, iy
+BB3_95:
+	bit	0, a
+	jr	nz, BB3_97
+	ld	(ix - 108), bc
+BB3_97:
+	push	de
+	pop	hl
+	ld	bc, 288
+	or	a, a
+	sbc	hl, bc
+	ccf
+	sbc	a, a
+	ld	bc, (ix - 108)
+	push	bc
+	pop	hl
+	call	__ineg
+	ld	(ix - 3), bc
+	ld	bc, -154
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), hl
+	bit	0, a
+	ld	hl, 288
+	ld	(ix - 51), hl
+	ld	iy, (ix - 64)
+	ld	bc, (ix - 3)
+	jr	nz, BB3_99
+	ld	(ix - 51), de
+BB3_99:
+	bit	0, a
+	ld	hl, (ix - 61)
+	jr	nz, BB3_101
+	push	ix
+	ld	de, -154
+	add	ix, de
+	ld	(ix), bc
+	pop	ix
+BB3_101:
+	ld	de, 238
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	hl, -20
+	jp	p, BB3_103
+	ld	hl, (ix - 111)
+BB3_103:
+	push	hl
+	pop	bc
+	ld	de, -35
+	add	hl, de
+	ld	de, 3
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB3_105
+	ld	hl, 35
+	ld	(ix - 61), hl
+	or	a, a
+	sbc	hl, hl
+	push	ix
+	ld	de, -135
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	(ix - 114), hl
+	jr	BB3_106
+BB3_105:
+	ld	(ix - 61), bc
+	ld	hl, 1
+	push	ix
+	ld	de, -135
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+BB3_106:
+	ld	c, (ix - 58)
+	ld	a, (ix - 65)
+	and	a, 1
+	xor	a, 1
+	ld	l, a
+	ld	a, c
+	and	a, l
+	and	a, (ix - 85)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	l, -1
+	jr	z, BB3_108
+	ld	l, 0
+BB3_108:
+	and	a, l
+	ld	l, a
+	ld	a, (ix - 69)
+	and	a, 1
+	push	ix
+	ld	de, -148
+	add	ix, de
+	ld	(ix), a
+	pop	ix
+	xor	a, 1
+	ld	e, a
+	ld	a, l
+	and	a, e
+	ld	hl, (ix - 51)
+	ld	de, 8
+	add	hl, de
+	ld	(ix - 108), hl
+	ld	hl, (ix - 61)
+	ld	de, 20
+	add	hl, de
+	ld	(ix - 58), hl
+	bit	0, a
+	jr	nz, BB3_110
+	ld	hl, (ix - 123)
+	ld	(ix - 58), hl
+BB3_110:
+	bit	0, a
+	jr	nz, BB3_112
+	ld	hl, (ix - 126)
+	ld	(ix - 108), hl
+BB3_112:
+	bit	0, a
+	ld	b, 1
+	jr	nz, BB3_114
+	ld	b, (ix - 65)
+BB3_114:
+	lea	hl, iy
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	de, -1
+	jp	p, BB3_116
+	ld	de, 0
+BB3_116:
+	add	iy, de
+	ld	(ix - 64), iy
+	ld	a, b
+	and	a, 1
+	xor	a, 1
+	ld	hl, (ix - 58)
+	push	hl
+	pop	iy
+	ld	de, 4
+	add	iy, de
+	ld	de, 237
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	e, -1
+	jp	p, BB3_118
+	ld	e, 0
+BB3_118:
+	bit	0, e
+	ld	hl, 30
+	jr	nz, BB3_120
+	ld	hl, (ix - 64)
+BB3_120:
+	bit	0, e
+	ld	e, 0
+	jr	nz, BB3_122
+	ld	e, b
+BB3_122:
+	bit	0, a
+	jr	nz, BB3_124
+	ld	(ix - 58), iy
+BB3_124:
+	bit	0, a
+	jr	nz, BB3_126
+	ld	(ix - 64), hl
+BB3_126:
+	bit	0, a
+	jr	nz, BB3_128
+	ld	b, e
+BB3_128:
+	ld	(ix - 65), b
+	ld	a, (ix - 68)
+	and	a, 1
+	bit	0, a
+	jp	z, BB3_143
+	bit	0, c
+	jp	z, BB3_143
+	ld	hl, (ix - 51)
+	ld	de, 16
+	add	hl, de
+	ex	de, hl
+	ld	bc, -144
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	pop	iy
+	ld	bc, 2
+	add	iy, bc
+	ld	(ix - 111), iy
+	ld	iy, (ix - 61)
+	ld	bc, 15
+	add	iy, bc
+	ld	(ix - 123), iy
+	ld	iy, (ix - 117)
+	ld	bc, 9
+	add	iy, bc
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_143
+	ld	de, (ix - 111)
+	ld	hl, (ix - 51)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_143
+	ld	de, (ix - 123)
+	ld	hl, (ix - 117)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_143
+	lea	de, iy
+	ld	hl, (ix - 61)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_143
+	ld	de, -147
+	lea	hl, ix
+	add	hl, de
+	ld	hl, (hl)
+	inc	hl
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), hl
+	ld	bc, 3
+	call	__idivs
+	push	hl
+	pop	bc
+	ld	de, 49
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB3_136
+	ld	bc, 49
+BB3_136:
+	inc	bc
+	ld	(ix - 72), bc
+	push	bc
+	pop	hl
+	ld	bc, 100
+	call	__imulu
+	push	hl
+	pop	iy
+	ld	(ix - 3), bc
+	push	ix
+	ld	bc, -132
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	add	iy, de
+	ld	bc, (ix - 3)
+	ld	bc, (ix - 88)
+	push	bc
+	pop	hl
+	ld	de, 5000
+	add	hl, de
+	ld	(ix - 68), hl
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	ld	de, 1
+	jp	p, BB3_138
+	ld	de, 0
+BB3_138:
+	ld	hl, (ix - 101)
+	add	hl, de
+	ld	(ix - 101), hl
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	lea	de, iy
+	jp	m, BB3_140
+	ld	bc, (ix - 68)
+BB3_140:
+	ld	(ix - 3), bc
+	ld	bc, -157
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ex	de, hl
+	ld	de, (ix - 120)
+	ld	bc, -132
+	lea	iy, ix
+	push	af
+	add	iy, bc
+	pop	af
+	ld	(iy), hl
+	ld	bc, (ix - 3)
+	jp	p, BB3_142
+	ld	(ix - 9), hl
+BB3_142:
+	xor	a, a
+	ld	(ix - 68), a
+	ld	hl, 180
+	ld	(ix - 95), hl
+	ld	(ix - 73), a
+	inc	a
+	ld	(ix - 105), a
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 3), bc
+	ld	bc, -129
+	lea	iy, ix
+	add	iy, bc
+	ld	(iy), hl
+	inc	hl
+	push	ix
+	ld	bc, -138
+	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+	ld	iy, (ix - 72)
+	ld	l, (ix - 55)
+	ld	bc, (ix - 3)
+	jp	BB3_150
+BB3_143:
+	ld	a, (ix - 105)
+	and	a, 1
+	bit	0, a
+	jp	z, BB3_149
+	ld	de, -138
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+	push	bc
+	pop	hl
+	ld	de, 5
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB3_147
+	ld	de, -129
+	lea	hl, ix
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	pop	bc
+	inc	bc
+	ld	de, 2
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB3_148
+	ld	(ix - 111), bc
+	call	_rand
+	ld	bc, 177
+	call	__irems
+	ld	de, 127
+	add	hl, de
+	ld	(ix - 51), hl
+	ld	hl, -20
+	ld	(ix - 61), hl
+	ld	hl, 1
+	ld	de, -135
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), hl
+	ld	a, l
+	ld	(ix - 73), a
+	dec	a
+	ld	(ix - 105), a
+	ld	hl, (ix - 111)
+	push	ix
+	ld	de, -129
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	or	a, a
+	sbc	hl, hl
+	push	ix
+	ld	de, -138
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	(ix - 114), hl
+	jr	BB3_149
+BB3_147:
+	inc	bc
+	ld	de, -138
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), bc
+	jr	BB3_149
+BB3_148:
+	ld	de, -129
+	lea	hl, ix
+	add	hl, de
+	ld	(hl), bc
+	or	a, a
+	sbc	hl, hl
+	ld	de, -138
+	lea	iy, ix
+	add	iy, de
+	ld	(iy), hl
+BB3_149:
+	ld	bc, (ix - 88)
+	ld	iy, (ix - 72)
+	ld	de, (ix - 120)
+	ld	l, (ix - 55)
+BB3_150:
+	ld	a, l
+	and	a, 1
+	bit	0, a
+	ld	(ix - 88), bc
+	jr	nz, BB3_152
+	ld	e, l
+	jr	BB3_157
+BB3_152:
+	push	de
+	pop	hl
+	push	de
+	pop	bc
+	ld	de, 5
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB3_156
+	ld	bc, (ix - 104)
+	push	bc
+	pop	hl
+	ld	de, 2
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	e, d
+	jp	p, BB3_155
+	ld	e, (ix - 55)
+BB3_155:
+	inc	bc
+	ld	(ix - 104), bc
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 120), hl
+	jr	BB3_157
+BB3_156:
+	inc	bc
+	ld	(ix - 120), bc
+	ld	e, (ix - 55)
+BB3_157:
+	ld	l, (ix - 65)
+	ld	a, l
+	and	a, 1
+	bit	0, a
+	jp	z, BB3_165
+	bit	0, (ix - 85)
+	jp	z, BB3_165
+	push	ix
+	ld	bc, -148
+	add	ix, bc
+	bit	0, (ix)
+	pop	ix
+	jp	nz, BB3_165
+	ld	(ix - 72), iy
+	ld	hl, (ix - 48)
+	ld	bc, 16
+	add	hl, bc
+	ld	(ix - 55), hl
+	ld	hl, (ix - 108)
+	push	hl
+	pop	iy
+	ld	bc, 2
+	add	iy, bc
+	ld	(ix - 85), iy
+	ld	iy, (ix - 91)
+	ld	bc, 14
+	add	iy, bc
+	ld	(ix - 111), iy
+	ld	iy, (ix - 58)
+	ld	bc, 10
+	add	iy, bc
+	ld	bc, (ix - 55)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB3_177
+	ld	(ix - 55), iy
+	ld	bc, (ix - 85)
+	ld	hl, (ix - 48)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB3_177
+	ld	bc, (ix - 111)
+	ld	hl, (ix - 58)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB3_177
+	ld	bc, (ix - 55)
+	ld	hl, (ix - 91)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB3_177
+	ld	hl, (ix - 101)
+	dec	hl
+	ld	(ix - 101), hl
+	ld	iy, 1
+	or	a, a
+	sbc	hl, hl
+	push	ix
+	ld	de, -147
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	(ix - 95), hl
+	xor	a, a
+	ld	(ix - 52), a
+	ld	c, iyl
+	ld	(ix - 104), hl
+	ld	(ix - 120), hl
+	ld	(ix - 65), a
+	jr	BB3_166
+BB3_165:
+	ld	c, e
+	ld	(ix - 65), l
+BB3_166:
+	ld	a, (ix - 73)
+	and	a, 1
+	ld	e, a
+	ld	a, (ix - 52)
+	and	a, 1
+	ld	l, a
+	ld	a, c
+	and	a, 1
+	bit	0, e
+	ld	(ix - 55), c
+	jp	z, BB3_179
+	bit	0, l
+	jp	z, BB3_179
+	bit	0, a
+	jp	nz, BB3_179
+	ld	(ix - 72), iy
+	ld	hl, (ix - 48)
+	ld	de, 16
+	push	de
+	pop	bc
+	add	hl, bc
+	ex	de, hl
+	ld	hl, (ix - 51)
+	push	hl
+	pop	iy
+	add	iy, bc
+	ld	(ix - 85), iy
+	ld	iy, (ix - 91)
+	ld	bc, 13
+	add	iy, bc
+	ld	(ix - 111), iy
+	ld	iy, (ix - 61)
+	ld	bc, 15
+	add	iy, bc
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_178
+	ld	bc, (ix - 111)
+	ld	de, (ix - 85)
+	ld	hl, (ix - 48)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_178
+	ld	hl, (ix - 61)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB3_178
+	lea	de, iy
+	ld	hl, (ix - 91)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_178
+	ld	bc, -148
+	lea	hl, ix
+	add	hl, bc
+	bit	0, (hl)
+	jp	nz, BB3_211
+	ld	hl, (ix - 101)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	de, -1
+	jp	p, BB3_176
+	ld	de, 0
+BB3_176:
+	ld	hl, (ix - 101)
+	add	hl, de
+	ld	(ix - 101), hl
+	ld	iy, 1
+	or	a, a
+	sbc	hl, hl
+	push	ix
+	ld	bc, -147
+	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+	xor	a, a
+	ld	(ix - 73), a
+	ld	e, iyl
+	ld	(ix - 105), e
+	push	ix
+	ld	bc, -129
+	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+	push	ix
+	ld	bc, -138
+	add	ix, bc
+	ld	(ix), hl
+	pop	ix
+	ld	(ix - 52), a
+	ld	(ix - 55), e
+	ld	(ix - 104), hl
+	ld	(ix - 120), hl
+	jr	BB3_179
+BB3_177:
+	ld	c, e
+	ld	iy, (ix - 72)
+	jp	BB3_166
+BB3_178:
+	ld	iy, (ix - 72)
+BB3_179:
+	ld	de, -141
+	lea	hl, ix
+	add	hl, de
+	ld	bc, (hl)
+	ld	(ix - 72), iy
+	push	bc
+	pop	hl
+	ld	de, -78
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	hl, 0
+	ld	(ix - 85), hl
+	jp	m, BB3_181
+	dec	bc
+	ld	(ix - 85), bc
+BB3_181:
+	ld	hl, (ix - 98)
+	inc	hl
+	ld	(ix - 98), hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	ld	iy, -80
+BB3_182:
+	lea	hl, iy
+	ld	de, 320
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB3_184
+	lea	hl, iy
+	ld	de, (ix - 85)
+	or	a, a
+	sbc	hl, de
+	push	hl
+	ld	hl, 112
+	push	hl
+	ld	hl, _bg_data
+	push	hl
+	ld	(ix - 111), iy
+	call	_gfx_Sprite
+	ld	iy, (ix - 111)
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 80
+	add	iy, de
+	jr	BB3_182
+BB3_184:
+	ld	a, (ix - 73)
+	and	a, 1
+	bit	0, a
+	ld	hl, (ix - 61)
+	push	hl
+	ld	hl, (ix - 51)
+	push	hl
+	ld	hl, _enemy_data
+	push	hl
+	call	nz, _gfx_TransparentSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (ix - 105)
+	and	a, 1
+	bit	0, a
+	ld	iy, (ix - 104)
+	jr	z, BB3_187
+	ld	bc, -129
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	ld	de, 3
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB3_187
+	ld	de, -129
+	lea	hl, ix
+	add	hl, de
+	ld	hl, (hl)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _switch.table.main.3
+	add	hl, de
+	ld	hl, (hl)
+	ld	de, (ix - 61)
+	push	de
+	ld	de, (ix - 51)
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite
+	ld	iy, (ix - 104)
+	pop	hl
+	pop	hl
+	pop	hl
+BB3_187:
+	ld	a, (ix - 52)
+	and	a, 1
+	ld	(ix - 111), a
+	bit	0, a
+	jr	z, BB3_193
+	ld	hl, (ix - 98)
+	ld	bc, 4
+	call	__iand
+	push	ix
+	ld	de, -148
+	add	ix, de
+	bit	0, (ix)
+	pop	ix
+	jr	z, BB3_190
+	ld	a, l
+	or	a, a
+	jr	z, BB3_193
+BB3_190:
+	ld	a, l
+	or	a, a
+	ld	hl, _ship2_data
+	jr	z, BB3_192
+	ld	hl, _ship1_data
+BB3_192:
+	ld	de, (ix - 91)
+	push	de
+	ld	de, (ix - 48)
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, (ix - 104)
+BB3_193:
+	ld	a, (ix - 55)
+	and	a, 1
+	ld	(ix - 123), a
+	bit	0, a
+	jr	z, BB3_196
+	lea	hl, iy
+	ld	de, 3
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB3_196
+	lea	hl, iy
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _switch.table.main.3
+	add	hl, de
+	ld	hl, (hl)
+	ld	de, (ix - 91)
+	push	de
+	ld	de, (ix - 48)
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite
+	pop	hl
+	pop	hl
+	pop	hl
+BB3_196:
+	ld	a, (ix - 68)
+	and	a, 1
+	bit	0, a
+	jr	z, BB3_198
+	scf
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 2
+	push	hl
+	ld	hl, (ix - 117)
+	push	hl
+	ld	bc, -144
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB3_198:
+	ld	a, (ix - 65)
+	and	a, 1
+	bit	0, a
+	jr	z, BB3_200
+	scf
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, 2
+	push	hl
+	ld	hl, (ix - 58)
+	push	hl
+	ld	hl, (ix - 108)
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB3_200:
+	bit	0, (ix - 111)
+	jr	nz, BB3_204
+	bit	0, (ix - 123)
+	jr	nz, BB3_204
+	ld	hl, (ix - 101)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB3_204
+	ld	hl, 125
+	push	hl
+	ld	hl, 150
+	push	hl
+	ld	hl, _gameova_data
+	push	hl
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, (ix - 9)
+	ld	bc, -132
+	lea	hl, ix
+	add	hl, bc
+	ld	hl, (hl)
+	or	a, a
+	sbc	hl, de
+	ld	hl, 110
+	push	hl
+	ld	hl, 9
+	push	hl
+	ld	hl, _newhiscore_data
+	push	hl
+	call	z, _gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+BB3_204:
+	ld	hl, 19
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _score_data
+	push	hl
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 73
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _hiscore_data
+	push	hl
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 184
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _lifecounter_data
+	push	hl
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 101)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _lifenum_tiles_data
+	add	hl, de
+	ld	hl, (hl)
+	ld	de, 188
+	push	de
+	ld	de, 37
+	push	de
+	push	hl
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 10
+	push	hl
+	pop	iy
+	ld	bc, (ix - 79)
+BB3_205:
+	lea	hl, iy
+	ld	de, 46
+	or	a, a
+	sbc	hl, de
+	jr	z, BB3_207
+	ld	(ix - 111), bc
+	ld	hl, (ix - 111)
+	ld	hl, (hl)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _scorenum_tiles_data
+	add	hl, de
+	ld	hl, (hl)
+	ld	de, 35
+	push	de
+	push	iy
+	push	hl
+	ld	(ix - 123), iy
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, (ix - 111)
+	lea	iy, iy + 3
+	lea	bc, iy
+	ld	de, 6
+	ld	iy, (ix - 123)
+	add	iy, de
+	jr	BB3_205
+BB3_207:
+	ld	hl, 10
+	push	hl
+	pop	iy
+	ld	bc, (ix - 82)
+BB3_208:
+	lea	hl, iy
+	ld	de, 46
+	or	a, a
+	sbc	hl, de
+	jr	z, BB3_210
+	ld	(ix - 111), bc
+	ld	hl, (ix - 111)
+	ld	hl, (hl)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _scorenum_tiles_data
+	add	hl, de
+	ld	hl, (hl)
+	ld	de, 89
+	push	de
+	push	iy
+	push	hl
+	ld	(ix - 123), iy
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, (ix - 111)
+	lea	iy, iy + 3
+	lea	bc, iy
+	ld	de, 6
+	ld	iy, (ix - 123)
+	add	iy, de
+	jr	BB3_208
+BB3_210:
+	call	_gfx_SwapDraw
+	ld	hl, (ix - 58)
+	ld	(ix - 123), hl
+	ld	hl, (ix - 101)
+	ld	(ix - 111), hl
+	ld	de, -132
+	lea	hl, ix
+	add	hl, de
+	ld	hl, (hl)
+	ld	(ix - 58), hl
+	ld	hl, (ix - 108)
+	ld	(ix - 126), hl
+	ld	hl, (ix - 117)
+	ld	(ix - 108), hl
+	ld	bc, (ix - 85)
+	ld	iy, -720868
+	ld	de, (ix - 88)
+	jp	BB3_1
+BB3_211:
+	ld	iy, (ix - 72)
+	lea	hl, iy
+	ld	bc, 100
+	call	__imulu
+	ld	(ix - 3), bc
+	push	ix
+	ld	bc, -132
+	add	ix, bc
+	ld	de, (ix)
+	pop	ix
+	add	hl, de
+	xor	a, a
+	ld	(ix - 73), a
+	inc	a
+	ld	(ix - 105), a
+	ld	de, 0
+	push	ix
+	ld	bc, -129
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	push	ix
+	ld	bc, -138
+	add	ix, bc
+	ld	(ix), de
+	pop	ix
+	push	ix
+	ld	de, -132
+	add	ix, de
+	ld	(ix), hl
+	pop	ix
+	ld	bc, (ix - 3)
+	jp	BB3_179
+BB3_212:
+	ld	hl, (ix - 9)
+	push	hl
+	call	_saveHighScore
+	pop	hl
+	call	_gfx_End
+	or	a, a
+	sbc	hl, hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_0_data
+_lifenum_tile_0_data:
+	db	"", 10, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_1_data
+_lifenum_tile_1_data:
+	db	"", 10, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, ""
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_2_data
+_lifenum_tile_2_data:
+	db	"", 10, 0, "", 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, ""
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_3_data
+_lifenum_tile_3_data:
+	db	"", 10, 0, "", 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_4_data
+_lifenum_tile_4_data:
+	db	"", 10, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_5_data
+_lifenum_tile_5_data:
+	db	"", 10, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_6_data
+_lifenum_tile_6_data:
+	db	"", 10, 0, "", 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_7_data
+_lifenum_tile_7_data:
+	db	"", 10, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_8_data
+_lifenum_tile_8_data:
+	db	"", 10, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tile_9_data
+_lifenum_tile_9_data:
+	db	"", 10, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_0_data
+_scorenum_tile_0_data:
+	db	"", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_1_data
+_scorenum_tile_1_data:
+	db	"", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, ""
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_2_data
+_scorenum_tile_2_data:
+	db	"", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, ""
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_3_data
+_scorenum_tile_3_data:
+	db	"", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_4_data
+_scorenum_tile_4_data:
+	db	"", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, "", 0, "", 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_5_data
+_scorenum_tile_5_data:
+	db	"", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_6_data
+_scorenum_tile_6_data:
+	db	"", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_7_data
+_scorenum_tile_7_data:
+	db	"", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_8_data
+_scorenum_tile_8_data:
+	db	"", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tile_9_data
+_scorenum_tile_9_data:
+	db	"", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str
+_.str:
+	db	"SHIPSAV", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1
+_.str.1:
+	db	"r", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2
+_.str.2:
+	db	"w", 0
+
+	section	.data,"aw",@progbits
+	public	_global_palette
+_global_palette:
+	db	0, 0, 0, 0, "", 0, 10, 0, "", 0, "øÅﬂÇó$B|Ç~ˇˇ"
+
+	section	.data,"aw",@progbits
+	public	_bg_data
+_bg_data:
+	db	"–P", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, ""
+
+	section	.data,"aw",@progbits
+	public	_enemy_data
+_enemy_data:
+	db	"""", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, "								", 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "	", 0, "", 0, "	", 0, 0, 0, "	", 0, 0, 0, 0, "	", 0, "						", 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_boom1_data
+_boom1_data:
+	db	"", 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, "	", 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, "			", 0, 0, 0, 0, "	", 10, "			", 0, 0, 0, 0, 0, "					", 0, 0, 0, "			", 0, 0, 0, "	", 10, 10, "			", 0, 0, 0, "				", 10, "	", 0, 0, 0, "							", 10, 10, "				", 0, "			", 10, 10, 10, "	", 0, 0, 0, "		", 10, "				", 10, 10, 10, "					", 10, 10, 10, 10, "		", 0, 0, 0, 0, "	", 10, 10, 10, "	", 10, 10, 10, 10, 10, "			", 10, 10, 10, 10, 10, "		", 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, "	", 10, 10, 10, 10, 10, 10, 10, "		", 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "				", 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "		", 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "				", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "	", 0, 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, "			", 10, 10, 10, "	", 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, "								", 10, "		", 0, 0, 0, 0, "			", 10, 10, "																", 0, 0, 0, "											", 0, 0, 0, 0, 0, "					", 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		"
+
+	section	.data,"aw",@progbits
+	public	_boom2_data
+_boom2_data:
+	db	"", 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, "		", 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, "						", 0, "				", 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, "							", 0, 0, 0, 0, 0, 0, 0, "									", 0, "						", 0, 0, 0, 0, 0, 0, 0, 0, "									", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_boom3_data
+_boom3_data:
+	db	"", 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, "	"
+
+	section	.data,"aw",@progbits
+	public	_ship1_data
+_ship1_data:
+	db	"""", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "	", 10, "	", 0, "	", 10, "	", 0, 0, 0, 0, "	", 10, 10, 10, "		", 10, 10, 10, "	", 0, 0, 0, "	", 10, 10, 10, "		", 10, 10, 10, "	", 0, 0, 0, "		", 10, "				", 10, "		", 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0
+
+	section	.data,"aw",@progbits
+	public	_ship2_data
+_ship2_data:
+	db	"""", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "	", 0, 0, "", 0, "	", 0, 0, 0, 0, 0, 0, "	", 10, "		", 10, "	", 0, 0, 0, 0, 0, "	", 10, "		", 10, "	", 0, 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, ""
+	db	20 dup 0
+
+	section	.data,"aw",@progbits
+	public	_gameova_data
+_gameova_data:
+	db	"ÇA", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, ""
+	db	685 dup 0
+
+	section	.data,"aw",@progbits
+	public	_newhiscore_data
+_newhiscore_data:
+	db	"[", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, "", 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, ""
+	db	183 dup 0
+
+	section	.data,"aw",@progbits
+	public	_score_data
+_score_data:
+	db	"&", 10, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, ""
+
+	section	.data,"aw",@progbits
+	public	_hiscore_data
+_hiscore_data:
+	db	"I", 10, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, ""
+
+	section	.data,"aw",@progbits
+	public	_lifecounter_data
+_lifecounter_data:
+	db	"", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_lifenum_tiles_data
+_lifenum_tiles_data:
+	dl	_lifenum_tile_0_data
+	dl	_lifenum_tile_1_data
+	dl	_lifenum_tile_2_data
+	dl	_lifenum_tile_3_data
+	dl	_lifenum_tile_4_data
+	dl	_lifenum_tile_5_data
+	dl	_lifenum_tile_6_data
+	dl	_lifenum_tile_7_data
+	dl	_lifenum_tile_8_data
+	dl	_lifenum_tile_9_data
+
+	section	.data,"aw",@progbits
+	public	_scorenum_tiles_data
+_scorenum_tiles_data:
+	dl	_scorenum_tile_0_data
+	dl	_scorenum_tile_1_data
+	dl	_scorenum_tile_2_data
+	dl	_scorenum_tile_3_data
+	dl	_scorenum_tile_4_data
+	dl	_scorenum_tile_5_data
+	dl	_scorenum_tile_6_data
+	dl	_scorenum_tile_7_data
+	dl	_scorenum_tile_8_data
+	dl	_scorenum_tile_9_data
+
+	section	.rodata,"a",@progbits
+	private	_switch.table.main.3
+_switch.table.main.3:
+	dl	_boom1_data
+	dl	_boom2_data
+	dl	_boom3_data
+
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	extern	__Unwind_SjLj_Register
+	extern	_gfx_Begin
+	extern	_gfx_SetPalette
+	extern	_rand
+	extern	_ti_Close
+	extern	__ishl
+	extern	_ti_Read
+	extern	__idivs
+	extern	__setflag
+	extern	__iand
+	extern	_gfx_FillRectangle
+	extern	_ti_Open
+	extern	_gfx_Sprite
+	extern	__ineg
+	extern	__frameset
+	extern	_gfx_SetTransparentColor
+	extern	_ti_Delete
+	extern	_kb_Scan
+	extern	_ti_Write
+	extern	_gfx_SwapDraw
+	extern	_gfx_SetDraw
+	extern	_gfx_FillScreen
+	extern	__Unwind_SjLj_Unregister
+	extern	_ti_SetArchiveStatus
+	extern	__irems
+	extern	__imulu
+	extern	_gfx_SetColor
+	extern	_gfx_End
+	extern	_gfx_TransparentSprite
