@@ -1,2 +1,5 @@
-# Bad-shooter-for-TI-84-Plus-CE
-Some janky space shooter I made for the TI 84 Plus CE, in CE C Toolchain
+# Janky-shooter-for-TI-84-Plus-CE
+Some terrible space shooter I made for the TI 84 Plus CE, with the CE C Toolchain.
+
+It's very basic. You just shoot the same enemy ship (with **2nd**) for eternity to rack up the high score. Yes there's only **one enemy** on screen at a time.
+To quit press clear
