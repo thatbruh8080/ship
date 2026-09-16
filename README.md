@@ -12,3 +12,8 @@ If you die you don't respawn right away. To deploy a new ship press 2nd right aw
 Bonus ship every 5000 points
 
 To quit press clear
+
+# How to ACTUALLY play it tho
+If you try to play it on a stock CE there's a good chance an error would pop up.
+
+Unless you're below OS 5.5.5 TI decided to get rid of machine language program support, yes including programs written in C. To actually get it running you need to install the arTIfice jailbreak to get it to run. But we're not done yet, since this is written using the CE C Toolchain you also need to install LibLoad on your calculator so you can finally play a terrible space shooting game
