@@ -14,8 +14,11 @@ Bonus ship every 5000 points
 # Controls
 
 Moving left and right: **Sike you're smart enough to know yourself**
+
 Shoot: **2nd**
+
 Deploy new ship after old one "died": **2nd**
+
 
 Quit: **clear**
 
