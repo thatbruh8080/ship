@@ -2,14 +2,14 @@ Section          Base   Top    High   Length
 ---------------- ------ ------ ------ -------
 .icon            D1A882 D1A99C           11Ah
 .init.libs       D1A99C D1A9F4            58h
-.libs            D1A9F4 D1AA63            6Fh
-.init.clock      D1AA63 D1AA63             0h
-.init.reruncheck D1AA63 D1AA63             0h
-.init            D1AA63 D1AA83            20h
-.fini            D1AA83 D1AAB7            34h
-.text            D1AAB7 D1BD09          1252h
-.data            D1BD09 D23B93          7E8Ah
-.rodata          D23B93 D23BCA            37h
+.libs            D1A9F4 D1AA5B            67h
+.init.clock      D1AA5B D1AA5B             0h
+.init.reruncheck D1AA5B D1AA5B             0h
+.init            D1AA5B D1AA7B            20h
+.fini            D1AA7B D1AAAF            34h
+.text            D1AAAF D1B9F3           F44h
+.data            D1B9F3 D2387D          7E8Ah
+.rodata          D2387D D238AB            2Eh
 .init_array      000000 000000             0h
 .ctors           000000 000000             0h
 .dtors           000000 000000             0h
@@ -29,91 +29,88 @@ ___ctors_count            = 000000
 ___dtors_count            = 000000
 ___fini_array_count       = 000000
 __stack                   = D1A87E
-__iand                    = D1AAB7
-__frameset                = D1AACE
-__idivs                   = D1AADC
-__idvrms                  = D1AAE3
-__idvrmu                  = D1AB11
-__imulu                   = D1AB29
-__ineg                    = D1AB59
-__irems                   = D1AB62
-__ishl                    = D1AB6A
-__setflag                 = D1AB90
-_os_DisableHomeTextBuffer = D1AB9A
-_os_EnableHomeTextBuffer  = D1ABAC
-_random                   = D1ABBE
-__state                   = D1BD09
-_rand                     = D1AC15
-.missingappvar            = D23B93
-.libloadname              = D23B98
+__frameset                = D1AAAF
+__frameset0               = D1AABD
+__idivs                   = D1AAC8
+__idvrms                  = D1AACF
+__idvrmu                  = D1AAFD
+__imulu                   = D1AB15
+__ineg                    = D1AB45
+__irems                   = D1AB4E
+__setflag                 = D1AB56
+_os_DisableHomeTextBuffer = D1AB60
+_os_EnableHomeTextBuffer  = D1AB72
+_random                   = D1AB84
+__state                   = D1B9F3
+_rand                     = D1ABDB
+.missingappvar            = D2387D
+.libloadname              = D23882
 .libloadnamelen           = 000007
-.webaddress               = D23BA0
-__start                   = D1AA63
-___exithl                 = D1AA83
-skip._exit                = D1AA83
-skip.__Exit               = D1AA83
-skip._abort               = D1AA83
-_exit.sp                  = D1AA84
-_exit.flash_wait_states   = D1AA8E
-_updateDigits             = D1AC22
-_loadHighScore            = D1AC8C
-_saveHighScore            = D1ACDB
-_main                     = D1AD3D
-_lifenum_tile_0_data      = D1BD19
-_lifenum_tile_1_data      = D1BD57
-_lifenum_tile_2_data      = D1BD95
-_lifenum_tile_3_data      = D1BDD3
-_lifenum_tile_4_data      = D1BE11
-_lifenum_tile_5_data      = D1BE4F
-_lifenum_tile_6_data      = D1BE8D
-_lifenum_tile_7_data      = D1BECB
-_lifenum_tile_8_data      = D1BF09
-_lifenum_tile_9_data      = D1BF47
-_scorenum_tile_0_data     = D1BF85
-_scorenum_tile_1_data     = D1BFC3
-_scorenum_tile_2_data     = D1C001
-_scorenum_tile_3_data     = D1C03F
-_scorenum_tile_4_data     = D1C07D
-_scorenum_tile_5_data     = D1C0BB
-_scorenum_tile_6_data     = D1C0F9
-_scorenum_tile_7_data     = D1C137
-_scorenum_tile_8_data     = D1C175
-_scorenum_tile_9_data     = D1C1B3
-_.str                     = D23BB5
-_.str.1                   = D23BBD
-_.str.2                   = D23BBF
-_global_palette           = D1C1F1
-_bg_data                  = D1C209
-_enemy_data               = D2030B
-_boom1_data               = D2052D
-_boom2_data               = D2076F
-_boom3_data               = D209B1
-_ship1_data               = D20BF3
-_ship2_data               = D20E15
-_gameova_data             = D21037
-_newhiscore_data          = D2313B
-_score_data               = D23581
-_hiscore_data             = D236FF
-_lifecounter_data         = D239DB
-_lifenum_tiles_data       = D23B57
-_scorenum_tiles_data      = D23B75
-_switch.table.main.3      = D23BC1
+.webaddress               = D2388A
+__start                   = D1AA5B
+___exithl                 = D1AA7B
+skip._exit                = D1AA7B
+skip.__Exit               = D1AA7B
+skip._abort               = D1AA7B
+_exit.sp                  = D1AA7C
+_exit.flash_wait_states   = D1AA86
+_main                     = D1ABE8
+_spawnX                   = D1B8FB
+_updateDigits             = D1B90D
+_drawExplosion            = D1B966
+_drawDigits               = D1B998
+_lifenum_tile_0_data      = D1BA03
+_lifenum_tile_1_data      = D1BA41
+_lifenum_tile_2_data      = D1BA7F
+_lifenum_tile_3_data      = D1BABD
+_lifenum_tile_4_data      = D1BAFB
+_lifenum_tile_5_data      = D1BB39
+_lifenum_tile_6_data      = D1BB77
+_lifenum_tile_7_data      = D1BBB5
+_lifenum_tile_8_data      = D1BBF3
+_lifenum_tile_9_data      = D1BC31
+_scorenum_tile_0_data     = D1BC6F
+_scorenum_tile_1_data     = D1BCAD
+_scorenum_tile_2_data     = D1BCEB
+_scorenum_tile_3_data     = D1BD29
+_scorenum_tile_4_data     = D1BD67
+_scorenum_tile_5_data     = D1BDA5
+_scorenum_tile_6_data     = D1BDE3
+_scorenum_tile_7_data     = D1BE21
+_scorenum_tile_8_data     = D1BE5F
+_scorenum_tile_9_data     = D1BE9D
+_global_palette           = D1BEDB
+_bg_data                  = D1BEF3
+_enemy_data               = D1FFF5
+_ship1_data               = D20217
+_ship2_data               = D20439
+_gameova_data             = D2065B
+_newhiscore_data          = D2275F
+_score_data               = D22BA5
+_hiscore_data             = D22D23
+_lifecounter_data         = D22FFF
+_lifenum_tiles_data       = D2317B
+_scorenum_tiles_data      = D23199
+_.str                     = D2389F
+_.str.1                   = D238A7
+_boom1_data               = D231B7
+_boom3_data               = D233F9
+_boom2_data               = D2363B
+_.str.2                   = D238A9
 lib.LibLoad               = D1A9F4
 _#ti_Open                 = D1AA08
 _#ti_Close                = D1AA0C
 _#ti_Write                = D1AA10
 _#ti_Read                 = D1AA14
-_#ti_Delete               = D1AA18
-_#ti_SetArchiveStatus     = D1AA1C
-_#gfx_Begin               = D1AA29
-_#gfx_End                 = D1AA2D
-_#gfx_SetColor            = D1AA31
-_#gfx_SetPalette          = D1AA35
-_#gfx_FillScreen          = D1AA39
-_#gfx_SetDraw             = D1AA3D
-_#gfx_SwapDraw            = D1AA41
-_#gfx_FillRectangle       = D1AA45
-_#gfx_Sprite              = D1AA49
-_#gfx_TransparentSprite   = D1AA4D
-_#gfx_SetTransparentColor = D1AA51
-_#kb_Scan                 = D1AA5F
+_#ti_SetArchiveStatus     = D1AA18
+_#gfx_Begin               = D1AA25
+_#gfx_End                 = D1AA29
+_#gfx_SetColor            = D1AA2D
+_#gfx_SetPalette          = D1AA31
+_#gfx_SetDraw             = D1AA35
+_#gfx_SwapDraw            = D1AA39
+_#gfx_FillRectangle       = D1AA3D
+_#gfx_Sprite              = D1AA41
+_#gfx_TransparentSprite   = D1AA45
+_#gfx_SetTransparentColor = D1AA49
+_#kb_Scan                 = D1AA57

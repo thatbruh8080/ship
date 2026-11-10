@@ -1,105 +1,19 @@
 	section	.text,"ax",@progbits
 	assume	adl = 1
 	section	.text,"ax",@progbits
-	public	_updateDigits
-_updateDigits:
-	ld	hl, -9
+	public	_main
+_main:
+	ld	hl, -119
 	call	__frameset
-	ld	hl, (ix + 6)
-	ld	(ix - 3), hl
-	ld	iy, (ix + 9)
-	ld	de, 5
-	lea	hl, iy + 15
-	ld	(ix - 6), hl
-	ld	bc, 0
-BB0_1:
-	push	de
-	pop	hl
-	or	a, a
-	sbc	hl, bc
-	call	pe, __setflag
-	jp	m, BB0_3
-	ld	hl, (ix - 3)
-	ld	bc, 10
-	call	__idivs
-	ld	(ix - 9), hl
-	ld	bc, -10
-	call	__imulu
-	ld	bc, 0
-	push	de
-	pop	iy
-	ld	de, (ix - 3)
-	add	hl, de
-	lea	de, iy
-	ld	iy, (ix - 6)
-	ld	(iy), hl
-	dec	de
-	lea	iy, iy - 3
-	ld	(ix - 6), iy
-	ld	hl, (ix - 9)
-	ld	(ix - 3), hl
-	jr	BB0_1
-BB0_3:
-	ld	sp, ix
-	pop	ix
-	ret
-	section	.text,"ax",@progbits
-
-	section	.text,"ax",@progbits
-	public	_loadHighScore
-_loadHighScore:
-	ld	hl, -3
-	call	__frameset
-	ld	hl, _.str
-	ld	de, _.str.1
-	push	de
-	push	hl
-	call	_ti_Open
-	ld	c, a
-	pop	hl
-	pop	hl
-	or	a, a
-	jr	nz, BB1_2
+	lea	hl, ix - 6
+	ld	(ix - 57), hl
+	lea	hl, ix - 12
+	ld	(ix - 72), hl
+	call	_spawnX
+	ld	(ix - 45), hl
 	ld	hl, 10000
-	ld	iy, (ix + 6)
-	ld	(iy), hl
-	jr	BB1_3
-BB1_2:
-	ld	hl, 3
-	ld	de, 1
-	push	bc
-	push	de
-	push	hl
-	ld	hl, (ix + 6)
-	push	hl
-	ld	(ix - 3), bc
-	call	_ti_Read
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	hl, (ix - 3)
-	push	hl
-	call	_ti_Close
-	pop	hl
-BB1_3:
-	pop	hl
-	pop	ix
-	ret
-	section	.text,"ax",@progbits
-
-	section	.text,"ax",@progbits
-	public	_saveHighScore
-_saveHighScore:
-	ld	hl, -6
-	call	__frameset
-	ld	hl, (ix + 6)
-	ld	de, _.str
-	ld	(ix - 3), hl
-	push	de
-	call	_ti_Delete
-	pop	hl
-	ld	hl, _.str.2
+	ld	(ix - 6), hl
+	ld	hl, _.str.1
 	push	hl
 	ld	hl, _.str
 	push	hl
@@ -108,65 +22,60 @@ _saveHighScore:
 	pop	hl
 	pop	hl
 	or	a, a
-	jr	z, BB2_2
-	ld	hl, 3
-	ld	bc, 1
+	jr	nz, BB0_2
+	ld	hl, 10000
+	jr	BB0_6
+BB0_2:
+	ld	(ix - 21), de
 	push	de
-	push	bc
-	push	hl
-	pea	ix - 3
-	ld	(ix - 6), de
-	call	_ti_Write
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
+	ld	de, 1
+	push	de
+	ld	de, 3
+	push	de
+	pea	ix - 6
+	call	_ti_Read
+	pop	de
+	pop	de
+	pop	de
+	pop	de
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB0_4
 	ld	hl, (ix - 6)
-	push	hl
-	ld	hl, 1
-	push	hl
-	call	_ti_SetArchiveStatus
-	pop	hl
-	pop	hl
-	ld	hl, (ix - 6)
+	ld	de, 0
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB0_5
+BB0_4:
+	ld	hl, 10000
+	ld	(ix - 6), hl
+BB0_5:
+	ld	hl, (ix - 21)
 	push	hl
 	call	_ti_Close
 	pop	hl
-BB2_2:
-	ld	sp, ix
-	pop	ix
-	ret
-	section	.text,"ax",@progbits
-
-	section	.text,"ax",@progbits
-	public	_main
-_main:
-	ld	hl, -157
-	call	__frameset
-	ld	hl, 10000
-	lea	de, ix - 27
-	ld	(ix - 79), de
-	lea	de, ix - 45
-	ld	(ix - 82), de
-	ld	(ix - 9), hl
-	pea	ix - 9
-	call	_loadHighScore
+	ld	hl, (ix - 6)
+BB0_6:
+	ld	(ix - 51), hl
+	lea	hl, ix - 18
+	ld	(ix - 98), hl
+	ld	(ix - 6), 0
+	ld	iy, (ix - 57)
+	lea	hl, iy
+	inc	hl
+	ld	bc, 5
+	ex	de, hl
+	lea	hl, iy
+	ldir
+	ld	hl, (ix - 72)
+	push	hl
+	ld	hl, (ix - 51)
+	push	hl
+	call	_updateDigits
 	pop	hl
-	ld	(ix - 27), 0
-	ld	hl, (ix - 79)
-	push	hl
-	pop	de
-	inc	de
-	ld	iy, 17
-	lea	bc, iy
-	ldir
-	ld	(ix - 45), 0
-	ld	hl, (ix - 82)
-	push	hl
-	pop	de
-	inc	de
-	lea	bc, iy
-	ldir
+	pop	hl
 	call	_gfx_Begin
 	or	a, a
 	sbc	hl, hl
@@ -188,118 +97,69 @@ _main:
 	push	hl
 	call	_gfx_SetDraw
 	pop	hl
-	call	_rand
-	ld	iy, -720868
-	ld	bc, 177
-	call	__irems
-	ld	de, 127
-	add	hl, de
-	ld	bc, 0
-	ld	(ix - 123), bc
-	ld	(ix - 51), hl
-	ld	hl, -20
-	ld	(ix - 61), hl
-	ld	hl, 1
-	push	ix
-	ld	de, -154
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	push	ix
-	ld	de, -151
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	ld	(ix - 72), hl
-	push	ix
-	ld	de, -147
-	add	ix, de
-	ld	(ix), bc
-	pop	ix
-	ld	(ix - 95), bc
-	push	ix
-	ld	de, -135
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	ld	(ix - 73), l
-	ld	a, b
-	ld	(ix - 105), a
-	ld	(ix - 92), a
-	ld	(ix - 69), a
-	ld	(ix - 76), bc
-	push	ix
-	ld	de, -129
-	add	ix, de
-	ld	(ix), bc
-	pop	ix
-	push	ix
-	ld	de, -138
-	add	ix, de
-	ld	(ix), bc
-	pop	ix
-	ld	(ix - 114), bc
-	ld	de, 30
-	ld	(ix - 64), de
-	ld	(ix - 52), l
-	ld	(ix - 55), a
-	ld	hl, 3
-	ld	(ix - 111), hl
-	ld	(ix - 104), bc
-	ld	(ix - 120), bc
-	ld	(ix - 58), bc
-	ld	de, 5000
-	ld	(ix - 126), bc
-	ld	(ix - 65), a
-	ld	(ix - 108), bc
-	ld	(ix - 3), de
-	ld	de, -144
-	lea	hl, ix
-	add	hl, de
-	ld	(hl), bc
-	ld	(ix - 68), a
-	ld	(ix - 98), bc
-	ld	hl, 160
-	ld	(ix - 91), hl
-	ld	hl, 218
+	ld	a, 0
+	ld	(ix - 73), a
+	ld	(ix - 39), a
+	ld	hl, 0
+	ld	(ix - 95), hl
+	ld	(ix - 66), hl
+	ld	(ix - 31), a
+	ld	(ix - 110), hl
+	ld	(ix - 63), hl
+	ld	de, -20
+	ld	(ix - 69), de
+	ld	de, 1
+	ld	(ix - 116), de
+	ld	(ix - 113), de
+	ld	(ix - 104), de
+	ld	(ix - 101), hl
 	ld	(ix - 48), hl
-	ld	de, (ix - 3)
-BB3_1:
-	ld	l, (iy)
-	ld	h, (iy + 1)
+	ld	(ix - 107), de
+	ld	e, a
+	ld	(ix - 21), de
+	ld	(ix - 74), a
+	ld	(ix - 60), hl
+	ld	(ix - 89), hl
+	ld	de, 30
+	ld	(ix - 38), de
+	ld	e, 1
+	ld	(ix - 35), e
+	ld	e, a
+	ld	(ix - 30), de
+	ld	de, 3
+	ld	(ix - 42), de
+	ld	(ix - 27), hl
+	ld	(ix - 83), hl
+	ld	de, (ix - 51)
+	ld	(ix - 77), de
+	ld	de, 5000
+	ld	(ix - 86), de
+	ld	(ix - 92), hl
+	ld	hl, 160
+	ld	(ix - 54), hl
+	ld	hl, 218
+	ld	(ix - 24), hl
+BB0_7:
+	call	_kb_Scan
+	ld	hl, -720868
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
 	ld	a, l
 	bit	6, a
-	jp	nz, BB3_212
-	ld	(ix - 3), de
-	ld	de, -141
-	lea	hl, ix
-	add	hl, de
-	ld	(hl), bc
-	ld	de, (ix - 3)
-	ld	(ix - 88), de
-	call	_kb_Scan
-	ld	hl, (ix - 79)
-	push	hl
-	ld	hl, (ix - 58)
-	push	hl
-	call	_updateDigits
-	pop	hl
-	pop	hl
-	ld	de, (ix - 9)
-	ld	hl, (ix - 82)
-	push	hl
-	ld	bc, -157
-	lea	hl, ix
-	add	hl, bc
-	ld	(hl), de
-	push	de
-	call	_updateDigits
-	pop	hl
-	pop	hl
-	ld	a, (ix - 52)
+	jp	nz, BB0_221
+	ld	a, (ix - 73)
+	inc	a
+	ld	(ix - 73), a
+	ld	a, (ix - 35)
 	and	a, 1
+	ld	(ix - 34), a
 	bit	0, a
-	jr	nz, BB3_13
+	jr	nz, BB0_11
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -308,186 +168,163 @@ BB3_1:
 	ld	l, e
 	ld	h, d
 	pop	de
-	ld	e, l
-	ld	a, (ix - 92)
-	and	a, 1
-	ld	l, a
-	ld	a, (ix - 55)
-	and	a, 1
-	bit	5, e
-	jr	z, BB3_13
-	bit	0, l
-	jr	nz, BB3_13
-	bit	0, a
-	jr	nz, BB3_13
-	ld	de, (ix - 111)
-	push	de
+	ld	a, l
+	bit	5, a
+	jr	z, BB0_11
+	ld	hl, (ix - 30)
+	ld	a, l
+	or	a, a
+	jr	z, BB0_14
+BB0_11:
+	ld	bc, (ix - 60)
+	push	bc
 	pop	hl
-	add	hl, bc
-	or	a, a
-	sbc	hl, bc
-	ld	a, -1
-	jr	z, BB3_8
-	ld	a, 0
-BB3_8:
-	bit	0, a
-	ld	hl, 3
-	ld	(ix - 101), hl
-	jr	nz, BB3_10
-	ld	(ix - 101), de
-BB3_10:
-	bit	0, a
-	ld	hl, 0
-	ld	de, (ix - 58)
-	jr	nz, BB3_12
-	ex	de, hl
-BB3_12:
-	ld	de, -132
-	lea	iy, ix
-	add	iy, de
-	ld	(iy), hl
-	ld	a, 1
-	ld	(ix - 92), a
-	ld	(ix - 69), a
-	ld	hl, 180
-	ld	(ix - 76), hl
-	ld	(ix - 52), a
-	ld	hl, 250
-	ld	(ix - 91), hl
-	ld	hl, 218
-	push	hl
-	pop	bc
-	jr	BB3_14
-BB3_13:
-	ld	hl, (ix - 111)
-	ld	(ix - 101), hl
-	ld	hl, (ix - 58)
-	ld	de, -132
-	lea	iy, ix
-	add	iy, de
-	ld	(iy), hl
-	ld	bc, (ix - 48)
-BB3_14:
-	ld	a, (ix - 69)
-	and	a, 1
-	xor	a, 1
-	ld	hl, (ix - 76)
-	ld	de, 2
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	ld	l, d
-	jp	m, BB3_16
-	ld	l, (ix - 69)
-BB3_16:
-	ld	(ix - 48), bc
-	bit	0, a
-	jr	nz, BB3_18
-	ld	(ix - 69), l
-BB3_18:
-	xor	a, 1
-	ld	l, a
-	ld	c, 23
-	call	__ishl
-	push	hl
-	pop	iy
-	add	iy, iy
-	sbc	hl, hl
-	push	hl
-	pop	de
-	ld	hl, (ix - 76)
-	add	hl, de
-	ld	(ix - 76), hl
-	ld	hl, (ix - 95)
 	ld	de, 1
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
+	jp	m, BB0_13
+	dec	bc
+	ld	(ix - 60), bc
+	ld	hl, (ix - 42)
+	ld	(ix - 80), hl
+	jr	BB0_23
+BB0_13:
+	ld	hl, (ix - 42)
+	ld	(ix - 80), hl
+	ld	bc, 0
+	ld	(ix - 60), bc
+	jr	BB0_24
+BB0_14:
+	ld	hl, (ix - 42)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
 	ld	a, -1
-	jp	p, BB3_20
+	jr	z, BB0_16
 	ld	a, 0
-BB3_20:
+BB0_16:
 	bit	0, a
-	ld	iy, -720866
-	jr	nz, BB3_22
-	ld	hl, 1
-	ld	(ix - 72), hl
-BB3_22:
+	ld	hl, 3
+	ld	(ix - 80), hl
+	ld	bc, 0
+	ld	de, 1
+	jr	nz, BB0_18
+	ld	hl, (ix - 42)
+	ld	(ix - 80), hl
+BB0_18:
 	bit	0, a
-	jr	nz, BB3_24
-	or	a, a
-	sbc	hl, hl
-	push	ix
-	ld	bc, -147
-	add	ix, bc
-	ld	(ix), hl
-	pop	ix
-BB3_24:
+	push	bc
+	pop	hl
+	ld	bc, (ix - 27)
+	jr	nz, BB0_20
+	push	bc
+	pop	hl
+BB0_20:
+	ld	(ix - 27), hl
 	bit	0, a
-	jr	nz, BB3_26
-	or	a, a
-	sbc	hl, hl
-	jr	BB3_27
-BB3_26:
-	ld	hl, (ix - 95)
-	dec	hl
-BB3_27:
-	ld	(ix - 95), hl
-	ld	a, (ix - 52)
+	ld	hl, 5000
+	jr	nz, BB0_22
+	ld	hl, (ix - 86)
+BB0_22:
+	ld	(ix - 86), hl
+	ld	hl, 179
+	ld	(ix - 60), hl
+	ld	hl, 218
+	ld	(ix - 24), hl
+	ld	hl, 250
+	ld	(ix - 54), hl
+	ld	a, 1
+	ld	(ix - 35), a
+	ld	(ix - 74), a
+BB0_23:
+	ld	bc, 0
+	ld	a, (ix - 35)
 	and	a, 1
-	ld	(ix - 85), a
-	bit	0, a
-	jr	z, BB3_32
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	ld	bc, (ix - 48)
-	push	bc
-	pop	hl
-	ld	de, -2
-	add	hl, de
-	bit	1, a
-	jr	z, BB3_30
-	push	hl
-	pop	bc
-BB3_30:
-	ld	l, (iy)
-	ld	h, (iy + 1)
-	ld	a, l
-	push	bc
-	pop	hl
-	ld	de, 2
-	add	hl, de
-	bit	2, a
-	jr	z, BB3_33
-	push	hl
-	pop	bc
-	jr	BB3_33
-BB3_32:
-	ld	bc, (ix - 48)
-BB3_33:
-	push	bc
-	pop	hl
-	ld	de, 128
+	ld	(ix - 34), a
+BB0_24:
+	ld	hl, (ix - 48)
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB3_35
-	ld	bc, 127
-BB3_35:
+	ld	a, -1
+	jp	p, BB0_26
+	ld	a, 0
+BB0_26:
+	bit	0, a
+	ld	de, (ix - 24)
+	jr	nz, BB0_28
+	ld	hl, 1
+	ld	(ix - 104), hl
+BB0_28:
+	bit	0, a
+	jr	nz, BB0_30
+	ld	(ix - 101), bc
+BB0_30:
+	bit	0, a
+	jr	nz, BB0_32
+	ld	(ix - 48), bc
+	jr	BB0_33
+BB0_32:
+	ld	hl, (ix - 48)
+	dec	hl
+	ld	(ix - 48), hl
+BB0_33:
+	bit	0, (ix - 34)
+	jr	z, BB0_38
+	ld	iy, -720866
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	ex	de, hl
+	ld	de, -2
+	add	hl, de
+	ld	de, (ix - 24)
+	bit	1, a
+	jr	z, BB0_36
+	ex	de, hl
+BB0_36:
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	push	de
+	pop	hl
+	push	de
+	pop	bc
+	ld	de, 2
+	add	hl, de
+	push	bc
+	pop	de
+	bit	2, a
+	jr	z, BB0_38
+	ex	de, hl
+BB0_38:
+	push	de
+	pop	hl
+	push	de
+	pop	bc
+	ld	de, 128
+	or	a, a
+	sbc	hl, de
 	push	bc
 	pop	hl
+	call	pe, __setflag
+	jp	p, BB0_40
+	ld	hl, 127
+BB0_40:
+	ld	(ix - 24), hl
 	ld	de, 288
 	or	a, a
 	sbc	hl, de
-	jr	c, BB3_37
-	ld	bc, 288
-BB3_37:
-	ld	(ix - 48), bc
-	ld	a, (ix - 92)
+	ld	c, (ix - 74)
+	jr	c, BB0_42
+	ld	hl, 288
+	ld	(ix - 24), hl
+BB0_42:
+	ld	a, c
 	and	a, 1
 	xor	a, 1
-	ld	hl, (ix - 91)
+	ld	hl, (ix - 54)
 	push	hl
 	pop	iy
 	ld	de, -4
@@ -497,31 +334,34 @@ BB3_37:
 	sbc	hl, de
 	call	pe, __setflag
 	ld	e, -1
-	jp	m, BB3_39
+	jp	m, BB0_44
 	ld	e, 0
-BB3_39:
+BB0_44:
 	bit	0, e
 	ld	l, 0
-	ld	bc, (ix - 51)
-	jr	nz, BB3_41
-	ld	l, (ix - 92)
-BB3_41:
+	jr	nz, BB0_46
+	ld	l, c
+BB0_46:
 	bit	0, e
 	ld	de, 160
-	jr	nz, BB3_43
+	jr	nz, BB0_48
 	lea	de, iy
-BB3_43:
+BB0_48:
 	bit	0, a
-	jr	nz, BB3_45
-	ld	(ix - 92), l
-BB3_45:
+	jr	nz, BB0_50
+	ld	c, l
+BB0_50:
 	bit	0, a
-	ld	iy, (ix - 64)
-	jr	nz, BB3_47
-	ld	(ix - 91), de
-BB3_47:
-	bit	0, (ix - 85)
-	jp	z, BB3_51
+	jr	nz, BB0_52
+	ld	(ix - 54), de
+BB0_52:
+	bit	0, (ix - 34)
+	ld	(ix - 74), c
+	jr	nz, BB0_54
+	ld	a, (ix - 39)
+	and	a, 1
+	jp	BB0_57
+BB0_54:
 	ld	hl, -720878
 	push	de
 	ld	e, (hl)
@@ -530,109 +370,91 @@ BB3_47:
 	ld	l, e
 	ld	h, d
 	pop	de
-	ld	a, (ix - 68)
+	ld	a, (ix - 39)
 	and	a, 1
 	bit	5, l
-	jr	z, BB3_52
+	jr	z, BB0_57
 	bit	0, a
-	jr	nz, BB3_52
-	ld	hl, (ix - 48)
-	ld	de, 7
-	add	hl, de
-	push	ix
-	ld	de, -144
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	ld	hl, (ix - 91)
-	ld	de, -4
-	add	hl, de
-	ld	(ix - 108), hl
+	ld	de, 3
+	jr	nz, BB0_58
+	ld	hl, (ix - 24)
+	ld	bc, 7
+	add	hl, bc
+	ld	(ix - 95), hl
+	ld	hl, (ix - 54)
+	ld	bc, -4
+	add	hl, bc
+	ld	(ix - 66), hl
 	ld	a, 1
-	ld	(ix - 68), a
-	jr	BB3_54
-BB3_51:
-	ld	a, (ix - 68)
-	and	a, 1
-BB3_52:
+	ld	(ix - 39), a
+	jr	BB0_59
+BB0_57:
+	ld	de, 3
+BB0_58:
 	bit	0, a
-	jr	nz, BB3_54
-	ld	hl, (ix - 108)
-	ld	(ix - 117), hl
-	jr	BB3_57
-BB3_54:
-	ld	(ix - 51), bc
-	ld	bc, (ix - 108)
-	push	bc
-	pop	hl
-	ld	de, -4
-	add	hl, de
-	ld	(ix - 117), hl
-	push	bc
-	pop	hl
-	ld	de, 4
+	jr	z, BB0_62
+BB0_59:
+	ld	hl, (ix - 66)
+	push	hl
+	pop	iy
+	ld	bc, -4
+	add	iy, bc
+	ld	bc, 4
 	or	a, a
-	sbc	hl, de
+	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB3_56
-	ld	hl, 1
-	ld	(ix - 72), hl
-	dec	hl
-	push	ix
-	ld	de, -147
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
+	jp	p, BB0_61
 	xor	a, a
-	ld	(ix - 68), a
-BB3_56:
-	ld	bc, (ix - 51)
-BB3_57:
-	ld	a, (ix - 73)
-	and	a, 1
-	ld	(ix - 58), a
-	bit	0, a
-	jr	nz, BB3_59
-	ld	(ix - 51), bc
-	jp	BB3_106
-BB3_59:
-	ld	de, -135
-	lea	hl, ix
-	add	hl, de
-	ld	hl, (hl)
+	ld	(ix - 39), a
+	ld	(ix - 66), iy
+	ld	hl, 1
+	ld	(ix - 104), hl
+	ld	bc, 0
+	ld	(ix - 101), bc
+	push	hl
+	pop	bc
+	jr	BB0_63
+BB0_61:
+	ld	(ix - 66), iy
+BB0_62:
+	ld	bc, 1
+BB0_63:
+	ld	iy, (ix - 38)
+	ld	hl, (ix - 21)
+	ld	a, l
+	or	a, a
+	jr	z, BB0_65
+	ld	de, 1
+	jp	BB0_112
+BB0_65:
+	ld	hl, (ix - 107)
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jp	nz, BB3_78
-	ld	de, -151
-	lea	hl, ix
-	add	hl, de
-	ld	iy, (hl)
-	add	iy, bc
+	jp	nz, BB0_84
+	ld	iy, (ix - 113)
+	ld	de, (ix - 45)
+	add	iy, de
 	lea	hl, iy
 	ld	de, 128
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
 	ld	a, -1
-	jp	m, BB3_62
+	jp	m, BB0_68
 	ld	a, 0
-BB3_62:
+BB0_68:
 	bit	0, a
 	ld	de, 127
-	jr	nz, BB3_64
+	jr	nz, BB0_70
 	lea	de, iy
-BB3_64:
+BB0_70:
 	bit	0, a
-	ld	bc, 1
 	push	bc
 	pop	iy
-	jr	nz, BB3_66
-	ld	bc, -151
-	lea	hl, ix
-	add	hl, bc
-	ld	iy, (hl)
-BB3_66:
+	jr	nz, BB0_72
+	ld	iy, (ix - 113)
+BB0_72:
 	push	de
 	pop	hl
 	ld	bc, 288
@@ -642,320 +464,269 @@ BB3_66:
 	sbc	a, a
 	bit	0, a
 	ld	hl, 288
-	ld	(ix - 51), hl
-	jr	nz, BB3_68
-	ld	(ix - 51), de
-BB3_68:
+	jr	nz, BB0_74
+	ex	de, hl
+BB0_74:
+	ld	(ix - 45), hl
 	bit	0, a
 	ld	hl, -1
-	push	ix
-	ld	bc, -151
-	push	af
-	add	ix, bc
-	pop	af
-	ld	(ix), hl
-	pop	ix
-	jr	nz, BB3_70
-	ld	bc, -151
-	lea	hl, ix
-	add	hl, bc
-	ld	(hl), iy
-BB3_70:
-	ld	iy, (ix - 48)
-	lea	hl, iy
+	ld	(ix - 113), hl
+	ld	bc, (ix - 30)
+	jr	nz, BB0_76
+	ld	(ix - 113), iy
+BB0_76:
+	ld	hl, (ix - 24)
 	ld	de, 16
 	add	hl, de
-	bit	0, (ix - 85)
-	ld	bc, (ix - 114)
-	jr	z, BB3_74
+	bit	0, (ix - 34)
+	ld	de, 1
+	ld	iy, (ix - 89)
+	jr	z, BB0_80
 	ex	de, hl
-	ld	hl, (ix - 51)
+	ld	hl, (ix - 45)
 	or	a, a
 	sbc	hl, de
-	jr	nc, BB3_74
-	ld	hl, (ix - 51)
+	ld	de, 1
+	jr	nc, BB0_80
+	ld	hl, (ix - 45)
 	ld	de, 16
 	add	hl, de
 	ex	de, hl
-	lea	hl, iy
+	ld	hl, (ix - 24)
 	or	a, a
 	sbc	hl, de
-	jr	nc, BB3_74
-	push	bc
-	pop	hl
+	ld	de, 1
+	jr	nc, BB0_80
+	lea	hl, iy
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
 	ld	hl, 15
-	jr	z, BB3_75
-BB3_74:
-	push	bc
-	pop	hl
-	ld	de, 1
+	jr	z, BB0_81
+BB0_80:
+	lea	hl, iy
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	push	bc
-	pop	hl
-	jp	m, BB3_85
-BB3_75:
+	lea	hl, iy
+	jp	m, BB0_90
+BB0_81:
 	dec	hl
-	ld	(ix - 114), hl
+	ld	(ix - 89), hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	ld	hl, 1
-	jr	z, BB3_77
+	push	de
+	pop	hl
+	jr	z, BB0_83
 	ld	hl, 0
-BB3_77:
-	ld	de, -135
-	lea	iy, ix
-	add	iy, de
-	ld	(iy), hl
-	jp	BB3_86
-BB3_78:
-	ld	hl, (ix - 61)
-	ld	de, 3
+BB0_83:
+	ld	(ix - 107), hl
+	jr	BB0_91
+BB0_84:
+	ld	hl, (ix - 69)
 	add	hl, de
-	ld	a, (ix - 69)
-	and	a, 1
-	bit	0, (ix - 85)
-	ld	iy, (ix - 48)
-	ld	(ix - 111), hl
-	jr	z, BB3_83
-	bit	0, a
-	jr	nz, BB3_83
+	ld	(ix - 42), hl
+	bit	0, (ix - 34)
+	ld	hl, (ix - 60)
+	jr	z, BB0_86
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_93
+BB0_86:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_92
+	ld	hl, (ix - 24)
+	ld	bc, (ix - 45)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	ld	de, 2
+	jp	m, BB0_96
 	push	bc
 	pop	hl
+	ld	de, (ix - 24)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	de, -2
+	jp	m, BB0_96
+	ld	de, (ix - 116)
+	jr	BB0_96
+BB0_90:
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 107), hl
+	ld	(ix - 89), hl
+BB0_91:
+	ld	iy, (ix - 38)
+	jp	BB0_113
+BB0_92:
+	ld	de, (ix - 116)
+	ld	bc, (ix - 45)
+	jr	BB0_96
+BB0_93:
+	ld	iy, (ix - 45)
+	lea	hl, iy
 	ld	de, 2
 	add	hl, de
-	lea	de, iy
+	ld	de, (ix - 24)
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
 	push	bc
 	pop	de
-	ld	bc, 1
-	jp	m, BB3_91
-	ex	de, hl
+	lea	bc, iy
+	jp	m, BB0_96
+	push	bc
+	pop	hl
 	ld	de, -2
 	add	hl, de
 	ex	de, hl
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	ld	bc, -1
-	jp	m, BB3_90
-	ld	bc, 0
-	jr	BB3_90
-BB3_83:
-	bit	0, a
-	jr	nz, BB3_87
-	push	bc
-	pop	de
-	ld	(ix - 3), de
-	ld	de, -154
-	lea	hl, ix
-	add	hl, de
-	ld	bc, (hl)
-	ld	de, (ix - 3)
-	jr	BB3_91
-BB3_85:
-	or	a, a
-	sbc	hl, hl
-	ld	de, -135
-	lea	iy, ix
-	add	iy, de
-	ld	(iy), hl
-	ld	(ix - 114), hl
-BB3_86:
-	ld	iy, (ix - 64)
-	jp	BB3_106
-BB3_87:
-	lea	hl, iy
-	or	a, a
-	sbc	hl, bc
-	call	pe, __setflag
-	push	bc
-	pop	de
-	ld	bc, 2
-	jp	m, BB3_91
-	ex	de, hl
-	lea	de, iy
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	ld	bc, -2
-	jp	m, BB3_90
-	ld	de, -154
-	lea	hl, ix
-	add	hl, de
-	ld	bc, (hl)
-BB3_90:
-	ld	de, (ix - 51)
-BB3_91:
-	push	bc
-	pop	iy
-	add	iy, de
-	lea	hl, iy
-	ld	de, 128
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	ld	a, -1
-	jp	m, BB3_93
-	ld	a, 0
-BB3_93:
-	push	bc
-	pop	hl
-	call	__ineg
-	ld	(ix - 108), hl
-	bit	0, a
-	ld	de, 127
-	jr	nz, BB3_95
-	lea	de, iy
-BB3_95:
-	bit	0, a
-	jr	nz, BB3_97
-	ld	(ix - 108), bc
-BB3_97:
-	push	de
-	pop	hl
-	ld	bc, 288
-	or	a, a
-	sbc	hl, bc
-	ccf
-	sbc	a, a
-	ld	bc, (ix - 108)
-	push	bc
-	pop	hl
-	call	__ineg
-	ld	(ix - 3), bc
-	ld	bc, -154
-	lea	iy, ix
-	add	iy, bc
-	ld	(iy), hl
-	bit	0, a
-	ld	hl, 288
-	ld	(ix - 51), hl
-	ld	iy, (ix - 64)
-	ld	bc, (ix - 3)
-	jr	nz, BB3_99
-	ld	(ix - 51), de
-BB3_99:
-	bit	0, a
-	ld	hl, (ix - 61)
-	jr	nz, BB3_101
-	push	ix
-	ld	de, -154
-	add	ix, de
-	ld	(ix), bc
-	pop	ix
-BB3_101:
-	ld	de, 238
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	ld	hl, -20
-	jp	p, BB3_103
-	ld	hl, (ix - 111)
-BB3_103:
-	push	hl
-	pop	bc
-	ld	de, -35
-	add	hl, de
-	ld	de, 3
-	or	a, a
-	sbc	hl, de
-	jr	nc, BB3_105
-	ld	hl, 35
-	ld	(ix - 61), hl
-	or	a, a
-	sbc	hl, hl
-	push	ix
-	ld	de, -135
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	ld	(ix - 114), hl
-	jr	BB3_106
-BB3_105:
-	ld	(ix - 61), bc
-	ld	hl, 1
-	push	ix
-	ld	de, -135
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-BB3_106:
-	ld	c, (ix - 58)
-	ld	a, (ix - 65)
-	and	a, 1
-	xor	a, 1
-	ld	l, a
-	ld	a, c
-	and	a, l
-	and	a, (ix - 85)
-	lea	hl, iy
-	add	hl, bc
-	or	a, a
-	sbc	hl, bc
-	ld	l, -1
-	jr	z, BB3_108
-	ld	l, 0
-BB3_108:
-	and	a, l
-	ld	l, a
-	ld	a, (ix - 69)
-	and	a, 1
-	push	ix
-	ld	de, -148
-	add	ix, de
-	ld	(ix), a
-	pop	ix
-	xor	a, 1
-	ld	e, a
-	ld	a, l
-	and	a, e
-	ld	hl, (ix - 51)
-	ld	de, 8
-	add	hl, de
-	ld	(ix - 108), hl
-	ld	hl, (ix - 61)
-	ld	de, 20
-	add	hl, de
-	ld	(ix - 58), hl
-	bit	0, a
-	jr	nz, BB3_110
-	ld	hl, (ix - 123)
-	ld	(ix - 58), hl
-BB3_110:
-	bit	0, a
-	jr	nz, BB3_112
-	ld	hl, (ix - 126)
-	ld	(ix - 108), hl
-BB3_112:
-	bit	0, a
-	ld	b, 1
-	jr	nz, BB3_114
-	ld	b, (ix - 65)
-BB3_114:
-	lea	hl, iy
-	ld	de, 1
+	ld	hl, (ix - 24)
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
 	ld	de, -1
-	jp	p, BB3_116
+	jp	m, BB0_96
 	ld	de, 0
-BB3_116:
+BB0_96:
+	push	de
+	pop	iy
+	add	iy, bc
+	lea	hl, iy
+	ld	bc, 128
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	ld	a, -1
+	jp	m, BB0_98
+	ld	a, 0
+BB0_98:
+	push	de
+	pop	hl
+	call	__ineg
+	bit	0, a
+	ld	bc, 127
+	jr	nz, BB0_100
+	lea	bc, iy
+BB0_100:
+	bit	0, a
+	push	hl
+	pop	iy
+	jr	nz, BB0_102
+	push	de
+	pop	iy
+BB0_102:
+	push	bc
+	pop	hl
+	ld	de, 288
+	or	a, a
+	sbc	hl, de
+	ccf
+	sbc	a, a
+	lea	hl, iy
+	call	__ineg
+	push	hl
+	pop	de
+	bit	0, a
+	ld	hl, 288
+	jr	nz, BB0_104
+	push	bc
+	pop	hl
+BB0_104:
+	ld	(ix - 45), hl
+	bit	0, a
+	ld	hl, (ix - 69)
+	jr	nz, BB0_106
+	lea	de, iy
+BB0_106:
+	ld	(ix - 116), de
+	ld	de, 238
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	iy, -20
+	ld	de, 0
+	jp	p, BB0_108
+	ld	iy, (ix - 42)
+BB0_108:
+	lea	hl, iy
+	ld	bc, -35
+	add	hl, bc
+	ld	bc, 3
+	or	a, a
+	sbc	hl, bc
+	jr	nc, BB0_110
+	ld	hl, 35
+	ld	(ix - 69), hl
+	ld	(ix - 107), de
+	ld	(ix - 89), de
+	jr	BB0_111
+BB0_110:
+	ld	(ix - 69), iy
+	ld	hl, 1
+	ld	(ix - 107), hl
+BB0_111:
+	ld	de, 1
+	ld	iy, (ix - 38)
+BB0_112:
+	ld	bc, (ix - 30)
+BB0_113:
+	ld	hl, (ix - 21)
+	ld	a, l
+	or	a, a
+	jr	nz, BB0_120
+	ld	a, (ix - 31)
+	and	a, 1
+	bit	0, a
+	jr	nz, BB0_120
+	bit	0, (ix - 34)
+	jr	z, BB0_120
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_118
+	ld	iy, (ix - 38)
+	jr	BB0_120
+BB0_118:
+	ld	hl, (ix - 60)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	iy, (ix - 38)
+	jr	nz, BB0_120
+	ld	hl, (ix - 45)
+	ld	bc, 8
+	add	hl, bc
+	ld	(ix - 110), hl
+	ld	hl, (ix - 69)
+	ld	bc, 20
+	add	hl, bc
+	ld	bc, (ix - 30)
+	ld	(ix - 63), hl
+	ld	iy, (ix - 38)
+	ld	a, 1
+	ld	(ix - 31), a
+BB0_120:
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	de, -1
+	jp	p, BB0_122
+	ld	de, 0
+BB0_122:
 	add	iy, de
-	ld	(ix - 64), iy
-	ld	a, b
+	ld	(ix - 38), iy
+	ld	a, (ix - 31)
 	and	a, 1
 	xor	a, 1
-	ld	hl, (ix - 58)
+	ld	hl, (ix - 63)
 	push	hl
 	pop	iy
 	ld	de, 4
@@ -964,715 +735,583 @@ BB3_116:
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	ld	e, -1
-	jp	p, BB3_118
+	ld	l, -1
+	jp	p, BB0_124
+	ld	l, 0
+BB0_124:
+	bit	0, l
 	ld	e, 0
-BB3_118:
-	bit	0, e
+	jr	nz, BB0_126
+	ld	e, (ix - 31)
+BB0_126:
+	bit	0, l
 	ld	hl, 30
-	jr	nz, BB3_120
-	ld	hl, (ix - 64)
-BB3_120:
-	bit	0, e
-	ld	e, 0
-	jr	nz, BB3_122
-	ld	e, b
-BB3_122:
+	jr	nz, BB0_128
+	ld	hl, (ix - 38)
+BB0_128:
 	bit	0, a
-	jr	nz, BB3_124
-	ld	(ix - 58), iy
-BB3_124:
+	jr	nz, BB0_130
+	ld	(ix - 31), e
+BB0_130:
 	bit	0, a
-	jr	nz, BB3_126
-	ld	(ix - 64), hl
-BB3_126:
+	jr	nz, BB0_132
+	ld	(ix - 63), iy
+BB0_132:
 	bit	0, a
-	jr	nz, BB3_128
-	ld	b, e
-BB3_128:
-	ld	(ix - 65), b
-	ld	a, (ix - 68)
+	ld	de, (ix - 21)
+	jr	nz, BB0_134
+	ld	(ix - 38), hl
+BB0_134:
+	ld	a, (ix - 39)
 	and	a, 1
 	bit	0, a
-	jp	z, BB3_143
-	bit	0, c
-	jp	z, BB3_143
-	ld	hl, (ix - 51)
+	jr	z, BB0_136
+	ld	a, e
+	or	a, a
+	jr	z, BB0_140
+BB0_136:
+	ld	a, e
+	or	a, a
+	jr	nz, BB0_138
+	xor	a, a
+	ld	l, a
+	ld	(ix - 21), hl
+	jp	BB0_150
+BB0_138:
+	inc	e
+	ld	a, e
+	cp	a, 19
+	jp	c, BB0_149
+	call	_spawnX
+	ld	bc, (ix - 30)
+	ld	(ix - 45), hl
+	ld	hl, -20
+	ld	(ix - 69), hl
+	ld	hl, 1
+	ld	(ix - 107), hl
+	xor	a, a
+	ld	l, a
+	ld	(ix - 21), hl
+	sbc	hl, hl
+	ld	(ix - 89), hl
+	jp	BB0_150
+BB0_140:
+	ld	hl, (ix - 45)
 	ld	de, 16
 	add	hl, de
 	ex	de, hl
-	ld	bc, -144
-	lea	hl, ix
-	add	hl, bc
-	ld	hl, (hl)
+	ld	hl, (ix - 95)
 	push	hl
 	pop	iy
 	ld	bc, 2
 	add	iy, bc
-	ld	(ix - 111), iy
-	ld	iy, (ix - 61)
+	ld	(ix - 21), iy
+	ld	iy, (ix - 69)
 	ld	bc, 15
 	add	iy, bc
-	ld	(ix - 123), iy
-	ld	iy, (ix - 117)
+	ld	(ix - 42), iy
+	ld	iy, (ix - 66)
 	ld	bc, 9
 	add	iy, bc
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB3_143
-	ld	de, (ix - 111)
-	ld	hl, (ix - 51)
+	jp	p, BB0_147
+	ld	bc, (ix - 42)
+	ld	de, (ix - 21)
+	ld	hl, (ix - 45)
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB3_143
-	ld	de, (ix - 123)
-	ld	hl, (ix - 117)
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	p, BB3_143
-	lea	de, iy
-	ld	hl, (ix - 61)
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	p, BB3_143
-	ld	de, -147
-	lea	hl, ix
-	add	hl, de
-	ld	hl, (hl)
-	inc	hl
-	lea	iy, ix
-	add	iy, de
-	ld	(iy), hl
-	ld	bc, 3
-	call	__idivs
-	push	hl
-	pop	bc
-	ld	de, 49
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	m, BB3_136
-	ld	bc, 49
-BB3_136:
-	inc	bc
-	ld	(ix - 72), bc
-	push	bc
-	pop	hl
-	ld	bc, 100
-	call	__imulu
-	push	hl
-	pop	iy
-	ld	(ix - 3), bc
-	push	ix
-	ld	bc, -132
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	add	iy, de
-	ld	bc, (ix - 3)
-	ld	bc, (ix - 88)
-	push	bc
-	pop	hl
-	ld	de, 5000
-	add	hl, de
-	ld	(ix - 68), hl
-	lea	hl, iy
+	jp	p, BB0_147
+	ld	hl, (ix - 66)
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
+	jp	p, BB0_147
+	lea	de, iy
+	ld	hl, (ix - 69)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB0_147
+	ld	hl, (ix - 101)
+	ld	de, 147
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
 	ld	de, 1
-	jp	p, BB3_138
+	jp	m, BB0_146
 	ld	de, 0
-BB3_138:
+BB0_146:
 	ld	hl, (ix - 101)
 	add	hl, de
 	ld	(ix - 101), hl
-	lea	hl, iy
+	ld	bc, 3
+	call	__idivs
+	inc	hl
+	ld	(ix - 104), hl
+	ld	bc, 100
+	call	__imulu
+	ld	de, (ix - 27)
+	add	hl, de
+	ld	(ix - 27), hl
+	ld	hl, 180
+	ld	(ix - 48), hl
+	xor	a, a
+	ld	(ix - 39), a
+	ld	a, 2
+	jr	BB0_148
+BB0_147:
+	xor	a, a
+BB0_148:
+	ld	l, a
+	ld	(ix - 21), hl
+	ld	bc, (ix - 30)
+	jr	BB0_150
+BB0_149:
+	ld	(ix - 21), de
+BB0_150:
+	ld	l, c
+	inc	l
+	ld	a, c
+	or	a, a
+	ld	e, -1
+	jr	z, BB0_152
+	ld	e, 0
+BB0_152:
+	ld	a, l
+	cp	a, 19
+	ccf
+	sbc	a, a
+	ld	c, a
+	ld	a, e
+	or	a, c
+	bit	0, a
+	ld	a, 0
+	ld	e, a
+	jr	nz, BB0_154
+	ld	e, l
+BB0_154:
+	ld	a, (ix - 31)
+	and	a, 1
+	bit	0, a
+	ld	(ix - 30), de
+	jp	z, BB0_162
+	bit	0, (ix - 34)
+	jp	z, BB0_162
+	ld	hl, (ix - 60)
+	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	call	pe, __setflag
-	lea	de, iy
-	jp	m, BB3_140
-	ld	bc, (ix - 68)
-BB3_140:
-	ld	(ix - 3), bc
-	ld	bc, -157
-	lea	hl, ix
-	add	hl, bc
-	ld	hl, (hl)
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
+	jr	nz, BB0_162
+	ld	hl, (ix - 24)
+	ld	de, 16
+	add	hl, de
 	ex	de, hl
-	ld	de, (ix - 120)
-	ld	bc, -132
-	lea	iy, ix
-	push	af
-	add	iy, bc
-	pop	af
-	ld	(iy), hl
-	ld	bc, (ix - 3)
-	jp	p, BB3_142
-	ld	(ix - 9), hl
-BB3_142:
-	xor	a, a
-	ld	(ix - 68), a
-	ld	hl, 180
-	ld	(ix - 95), hl
-	ld	(ix - 73), a
-	inc	a
-	ld	(ix - 105), a
-	or	a, a
-	sbc	hl, hl
-	ld	(ix - 3), bc
-	ld	bc, -129
-	lea	iy, ix
-	add	iy, bc
-	ld	(iy), hl
-	inc	hl
-	push	ix
-	ld	bc, -138
-	add	ix, bc
-	ld	(ix), hl
-	pop	ix
-	ld	iy, (ix - 72)
-	ld	l, (ix - 55)
-	ld	bc, (ix - 3)
-	jp	BB3_150
-BB3_143:
-	ld	a, (ix - 105)
-	and	a, 1
-	bit	0, a
-	jp	z, BB3_149
-	ld	de, -138
-	lea	hl, ix
-	add	hl, de
-	ld	bc, (hl)
-	push	bc
-	pop	hl
-	ld	de, 5
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	m, BB3_147
-	ld	de, -129
-	lea	hl, ix
-	add	hl, de
-	ld	hl, (hl)
-	push	hl
-	pop	bc
-	inc	bc
-	ld	de, 2
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	m, BB3_148
-	ld	(ix - 111), bc
-	call	_rand
-	ld	bc, 177
-	call	__irems
-	ld	de, 127
-	add	hl, de
-	ld	(ix - 51), hl
-	ld	hl, -20
-	ld	(ix - 61), hl
-	ld	hl, 1
-	ld	de, -135
-	lea	iy, ix
-	add	iy, de
-	ld	(iy), hl
-	ld	a, l
-	ld	(ix - 73), a
-	dec	a
-	ld	(ix - 105), a
-	ld	hl, (ix - 111)
-	push	ix
-	ld	de, -129
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	or	a, a
-	sbc	hl, hl
-	push	ix
-	ld	de, -138
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	ld	(ix - 114), hl
-	jr	BB3_149
-BB3_147:
-	inc	bc
-	ld	de, -138
-	lea	hl, ix
-	add	hl, de
-	ld	(hl), bc
-	jr	BB3_149
-BB3_148:
-	ld	de, -129
-	lea	hl, ix
-	add	hl, de
-	ld	(hl), bc
-	or	a, a
-	sbc	hl, hl
-	ld	de, -138
-	lea	iy, ix
-	add	iy, de
-	ld	(iy), hl
-BB3_149:
-	ld	bc, (ix - 88)
-	ld	iy, (ix - 72)
-	ld	de, (ix - 120)
-	ld	l, (ix - 55)
-BB3_150:
-	ld	a, l
-	and	a, 1
-	bit	0, a
-	ld	(ix - 88), bc
-	jr	nz, BB3_152
-	ld	e, l
-	jr	BB3_157
-BB3_152:
-	push	de
-	pop	hl
-	push	de
-	pop	bc
-	ld	de, 5
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	m, BB3_156
-	ld	bc, (ix - 104)
-	push	bc
-	pop	hl
-	ld	de, 2
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	ld	e, d
-	jp	p, BB3_155
-	ld	e, (ix - 55)
-BB3_155:
-	inc	bc
-	ld	(ix - 104), bc
-	or	a, a
-	sbc	hl, hl
-	ld	(ix - 120), hl
-	jr	BB3_157
-BB3_156:
-	inc	bc
-	ld	(ix - 120), bc
-	ld	e, (ix - 55)
-BB3_157:
-	ld	l, (ix - 65)
-	ld	a, l
-	and	a, 1
-	bit	0, a
-	jp	z, BB3_165
-	bit	0, (ix - 85)
-	jp	z, BB3_165
-	push	ix
-	ld	bc, -148
-	add	ix, bc
-	bit	0, (ix)
-	pop	ix
-	jp	nz, BB3_165
-	ld	(ix - 72), iy
-	ld	hl, (ix - 48)
-	ld	bc, 16
-	add	hl, bc
-	ld	(ix - 55), hl
-	ld	hl, (ix - 108)
+	ld	hl, (ix - 110)
 	push	hl
 	pop	iy
 	ld	bc, 2
 	add	iy, bc
-	ld	(ix - 85), iy
-	ld	iy, (ix - 91)
+	ld	(ix - 42), iy
+	ld	iy, (ix - 54)
 	ld	bc, 14
 	add	iy, bc
-	ld	(ix - 111), iy
-	ld	iy, (ix - 58)
+	ld	(ix - 119), iy
+	ld	iy, (ix - 63)
 	ld	bc, 10
 	add	iy, bc
-	ld	bc, (ix - 55)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB0_162
+	ld	bc, (ix - 119)
+	ld	de, (ix - 42)
+	ld	hl, (ix - 24)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB0_162
+	ld	hl, (ix - 63)
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB3_177
-	ld	(ix - 55), iy
-	ld	bc, (ix - 85)
-	ld	hl, (ix - 48)
+	jp	p, BB0_162
+	lea	de, iy
+	ld	hl, (ix - 54)
 	or	a, a
-	sbc	hl, bc
+	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB3_177
-	ld	bc, (ix - 111)
-	ld	hl, (ix - 58)
-	or	a, a
-	sbc	hl, bc
-	call	pe, __setflag
-	jp	p, BB3_177
-	ld	bc, (ix - 55)
-	ld	hl, (ix - 91)
-	or	a, a
-	sbc	hl, bc
-	call	pe, __setflag
-	jp	p, BB3_177
-	ld	hl, (ix - 101)
-	dec	hl
-	ld	(ix - 101), hl
-	ld	iy, 1
-	or	a, a
-	sbc	hl, hl
-	push	ix
-	ld	de, -147
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	ld	(ix - 95), hl
+	ld	l, 0
+	ld	e, 1
+	jp	p, BB0_163
 	xor	a, a
-	ld	(ix - 52), a
-	ld	c, iyl
-	ld	(ix - 104), hl
-	ld	(ix - 120), hl
-	ld	(ix - 65), a
-	jr	BB3_166
-BB3_165:
-	ld	c, e
-	ld	(ix - 65), l
-BB3_166:
-	ld	a, (ix - 73)
-	and	a, 1
+	ld	(ix - 31), a
+	ld	l, 1
 	ld	e, a
-	ld	a, (ix - 52)
-	and	a, 1
-	ld	l, a
-	ld	a, c
-	and	a, 1
-	bit	0, e
-	ld	(ix - 55), c
-	jp	z, BB3_179
-	bit	0, l
-	jp	z, BB3_179
+	jr	BB0_163
+BB0_162:
+	ld	l, 0
+	ld	e, 1
+BB0_163:
+	ld	(ix - 42), e
+	ld	de, (ix - 21)
+	ld	a, e
+	or	a, a
+	ld	c, -1
+	jr	nz, BB0_165
+	ld	c, 0
+BB0_165:
+	ld	a, l
+	or	a, c
 	bit	0, a
-	jp	nz, BB3_179
-	ld	(ix - 72), iy
-	ld	hl, (ix - 48)
-	ld	de, 16
+	ld	de, (ix - 24)
+	jp	nz, BB0_167
+	ld	l, 0
+	ld	(ix - 21), hl
+BB0_167:
+	bit	0, a
+	ld	bc, 0
+	push	bc
+	pop	iy
+	jp	nz, BB0_177
+	bit	0, (ix - 34)
+	jp	z, BB0_177
 	push	de
-	pop	bc
+	pop	hl
+	ld	bc, 16
 	add	hl, bc
-	ex	de, hl
-	ld	hl, (ix - 51)
+	ld	(ix - 21), hl
+	ld	hl, (ix - 45)
 	push	hl
 	pop	iy
 	add	iy, bc
-	ld	(ix - 85), iy
-	ld	iy, (ix - 91)
-	ld	bc, 13
-	add	iy, bc
-	ld	(ix - 111), iy
-	ld	iy, (ix - 61)
-	ld	bc, 15
-	add	iy, bc
+	ld	(ix - 34), iy
+	ld	iy, (ix - 54)
+	ld	(ix - 24), de
+	ld	de, 13
+	add	iy, de
+	ld	(ix - 119), iy
+	ld	iy, (ix - 69)
+	ld	de, 15
+	add	iy, de
+	ld	de, (ix - 21)
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB3_178
-	ld	bc, (ix - 111)
-	ld	de, (ix - 85)
-	ld	hl, (ix - 48)
-	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	p, BB3_178
-	ld	hl, (ix - 61)
+	jp	p, BB0_175
+	ld	de, (ix - 119)
+	ld	bc, (ix - 34)
+	ld	hl, (ix - 24)
 	or	a, a
 	sbc	hl, bc
 	call	pe, __setflag
-	jp	p, BB3_178
-	lea	de, iy
-	ld	hl, (ix - 91)
+	jp	p, BB0_175
+	ld	hl, (ix - 69)
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB3_178
-	ld	bc, -148
-	lea	hl, ix
+	jp	p, BB0_175
+	lea	bc, iy
+	ld	hl, (ix - 54)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB0_175
+	ld	hl, (ix - 60)
 	add	hl, bc
-	bit	0, (hl)
-	jp	nz, BB3_211
-	ld	hl, (ix - 101)
-	ld	de, 1
+	or	a, a
+	sbc	hl, bc
+	jp	nz, BB0_220
+	ld	a, 1
+	ld	l, a
+	ld	(ix - 21), hl
+	ld	bc, 0
+	push	bc
+	pop	iy
+	ld	bc, (ix - 80)
+	jr	BB0_178
+BB0_175:
+	xor	a, a
+	ld	l, a
+	ld	(ix - 21), hl
+BB0_176:
+	ld	bc, 0
+	push	bc
+	pop	iy
+BB0_177:
+	ld	bc, (ix - 80)
+	ld	a, (ix - 42)
+	bit	0, a
+	jr	nz, BB0_179
+BB0_178:
+	dec	bc
+	ld	hl, 1
+	ld	(ix - 104), hl
+	ld	(ix - 101), iy
+	ld	(ix - 48), iy
+	xor	a, a
+	ld	(ix - 35), a
+	inc	a
+	ld	l, a
+	ld	(ix - 30), hl
+BB0_179:
+	ld	hl, (ix - 27)
+	ld	de, (ix - 92)
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB0_181
+	ld	(ix - 42), bc
+	ld	bc, (ix - 83)
+	jp	BB0_189
+BB0_181:
+	ld	(ix - 80), bc
+	ld	hl, (ix - 57)
+	push	hl
+	ld	hl, (ix - 27)
+	push	hl
+	call	_updateDigits
+	ld	bc, 0
+	push	bc
+	pop	iy
+	pop	hl
+	pop	hl
+	ld	de, (ix - 77)
+	push	de
+	pop	hl
+	ld	bc, (ix - 27)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	ld	bc, (ix - 27)
+	jp	p, BB0_186
+	lea	de, iy
+BB0_183:
+	push	de
+	pop	bc
+	ex	de, hl
+	ld	de, 6
+	or	a, a
+	sbc	hl, de
+	jr	z, BB0_185
+	ld	hl, (ix - 57)
+	push	bc
+	pop	de
+	add	hl, de
+	ld	a, (hl)
+	ld	hl, (ix - 72)
+	add	hl, de
+	ld	(hl), a
+	inc	de
+	jr	BB0_183
+BB0_185:
+	ld	bc, (ix - 27)
+	push	bc
+	pop	de
+BB0_186:
+	ld	(ix - 77), de
+	push	bc
+	pop	hl
+	ld	iy, (ix - 86)
+	lea	de, iy
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	ld	de, -1
-	jp	p, BB3_176
-	ld	de, 0
-BB3_176:
-	ld	hl, (ix - 101)
-	add	hl, de
-	ld	(ix - 101), hl
-	ld	iy, 1
-	or	a, a
-	sbc	hl, hl
-	push	ix
-	ld	bc, -147
-	add	ix, bc
-	ld	(ix), hl
-	pop	ix
-	xor	a, a
-	ld	(ix - 73), a
-	ld	e, iyl
-	ld	(ix - 105), e
-	push	ix
-	ld	bc, -129
-	add	ix, bc
-	ld	(ix), hl
-	pop	ix
-	push	ix
-	ld	bc, -138
-	add	ix, bc
-	ld	(ix), hl
-	pop	ix
-	ld	(ix - 52), a
-	ld	(ix - 55), e
-	ld	(ix - 104), hl
-	ld	(ix - 120), hl
-	jr	BB3_179
-BB3_177:
-	ld	c, e
-	ld	iy, (ix - 72)
-	jp	BB3_166
-BB3_178:
-	ld	iy, (ix - 72)
-BB3_179:
-	ld	de, -141
-	lea	hl, ix
-	add	hl, de
-	ld	bc, (hl)
-	ld	(ix - 72), iy
+	ld	hl, (ix - 80)
+	jp	m, BB0_188
+	inc	hl
+	ld	de, 5000
+	add	iy, de
+BB0_188:
+	ld	(ix - 42), hl
+	ld	(ix - 86), iy
+	ld	(ix - 92), bc
+	ld	bc, (ix - 83)
+	ld	iy, 0
+BB0_189:
 	push	bc
 	pop	hl
 	ld	de, -78
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	ld	hl, 0
-	ld	(ix - 85), hl
-	jp	m, BB3_181
+	lea	hl, iy
+	jp	m, BB0_191
 	dec	bc
-	ld	(ix - 85), bc
-BB3_181:
-	ld	hl, (ix - 98)
-	inc	hl
-	ld	(ix - 98), hl
+	push	bc
+	pop	hl
+BB0_191:
+	ld	(ix - 34), hl
 	or	a, a
 	sbc	hl, hl
 	push	hl
-	call	_gfx_FillScreen
+	call	_gfx_SetColor
 	pop	hl
-	ld	iy, -80
-BB3_182:
-	lea	hl, iy
-	ld	de, 320
+	ld	hl, 240
+	push	hl
+	ld	hl, 112
+	push	hl
 	or	a, a
-	sbc	hl, de
-	call	pe, __setflag
-	jp	p, BB3_184
-	lea	hl, iy
-	ld	de, (ix - 85)
+	sbc	hl, hl
+	push	hl
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, -80
+	ld	de, (ix - 34)
 	or	a, a
 	sbc	hl, de
 	push	hl
+	pop	iy
+BB0_192:
+	lea	hl, iy
+	ld	de, 240
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB0_194
+	lea	hl, iy
+	ld	de, -79
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	(ix - 80), iy
+	push	iy
 	ld	hl, 112
 	push	hl
 	ld	hl, _bg_data
 	push	hl
-	ld	(ix - 111), iy
-	call	_gfx_Sprite
-	ld	iy, (ix - 111)
+	call	p, _gfx_Sprite
 	pop	hl
 	pop	hl
 	pop	hl
 	ld	de, 80
+	ld	iy, (ix - 80)
 	add	iy, de
-	jr	BB3_182
-BB3_184:
-	ld	a, (ix - 73)
-	and	a, 1
-	bit	0, a
-	ld	hl, (ix - 61)
+	jr	BB0_192
+BB0_194:
+	ld	de, (ix - 21)
+	ld	a, e
+	or	a, a
+	jr	nz, BB0_196
+	ld	hl, (ix - 69)
 	push	hl
-	ld	hl, (ix - 51)
+	ld	hl, (ix - 45)
 	push	hl
 	ld	hl, _enemy_data
 	push	hl
-	call	nz, _gfx_TransparentSprite
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	a, (ix - 105)
-	and	a, 1
-	bit	0, a
-	ld	iy, (ix - 104)
-	jr	z, BB3_187
-	ld	bc, -129
-	lea	hl, ix
-	add	hl, bc
-	ld	hl, (hl)
-	ld	de, 3
-	or	a, a
-	sbc	hl, de
-	jr	nc, BB3_187
-	ld	de, -129
-	lea	hl, ix
-	add	hl, de
-	ld	hl, (hl)
-	ld	bc, 3
-	call	__imulu
-	push	hl
-	pop	de
-	ld	hl, _switch.table.main.3
-	add	hl, de
-	ld	hl, (hl)
-	ld	de, (ix - 61)
-	push	de
-	ld	de, (ix - 51)
-	push	de
-	push	hl
 	call	_gfx_TransparentSprite
-	ld	iy, (ix - 104)
+	jr	BB0_197
+BB0_196:
+	ld	hl, (ix - 69)
+	push	hl
+	ld	hl, (ix - 45)
+	push	hl
+	push	de
+	call	_drawExplosion
+BB0_197:
 	pop	hl
 	pop	hl
 	pop	hl
-BB3_187:
-	ld	a, (ix - 52)
-	and	a, 1
-	ld	(ix - 111), a
-	bit	0, a
-	jr	z, BB3_193
-	ld	hl, (ix - 98)
-	ld	bc, 4
-	call	__iand
-	push	ix
-	ld	de, -148
-	add	ix, de
-	bit	0, (ix)
-	pop	ix
-	jr	z, BB3_190
+	ld	hl, (ix - 30)
 	ld	a, l
 	or	a, a
-	jr	z, BB3_193
-BB3_190:
-	ld	a, l
-	or	a, a
-	ld	hl, _ship2_data
-	jr	z, BB3_192
-	ld	hl, _ship1_data
-BB3_192:
-	ld	de, (ix - 91)
+	jr	z, BB0_199
+	ld	de, (ix - 54)
 	push	de
-	ld	de, (ix - 48)
+	ld	de, (ix - 24)
 	push	de
 	push	hl
-	call	_gfx_TransparentSprite
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	iy, (ix - 104)
-BB3_193:
-	ld	a, (ix - 55)
-	and	a, 1
-	ld	(ix - 123), a
-	bit	0, a
-	jr	z, BB3_196
-	lea	hl, iy
-	ld	de, 3
-	or	a, a
-	sbc	hl, de
-	jr	nc, BB3_196
-	lea	hl, iy
-	ld	bc, 3
-	call	__imulu
-	push	hl
-	pop	de
-	ld	hl, _switch.table.main.3
-	add	hl, de
-	ld	hl, (hl)
-	ld	de, (ix - 91)
-	push	de
-	ld	de, (ix - 48)
-	push	de
-	push	hl
-	call	_gfx_TransparentSprite
-	pop	hl
-	pop	hl
-	pop	hl
-BB3_196:
-	ld	a, (ix - 68)
+	call	_drawExplosion
+	jr	BB0_205
+BB0_199:
+	ld	a, (ix - 35)
 	and	a, 1
 	bit	0, a
-	jr	z, BB3_198
-	scf
-	sbc	hl, hl
-	push	hl
-	call	_gfx_SetColor
-	pop	hl
-	ld	hl, 10
-	push	hl
-	ld	hl, 2
-	push	hl
-	ld	hl, (ix - 117)
-	push	hl
-	ld	bc, -144
-	lea	hl, ix
-	add	hl, bc
-	ld	hl, (hl)
-	push	hl
-	call	_gfx_FillRectangle
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-BB3_198:
-	ld	a, (ix - 65)
-	and	a, 1
-	bit	0, a
-	jr	z, BB3_200
-	scf
-	sbc	hl, hl
-	push	hl
-	call	_gfx_SetColor
-	pop	hl
-	ld	hl, 10
-	push	hl
-	ld	hl, 2
-	push	hl
-	ld	hl, (ix - 58)
-	push	hl
-	ld	hl, (ix - 108)
-	push	hl
-	call	_gfx_FillRectangle
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-BB3_200:
-	bit	0, (ix - 111)
-	jr	nz, BB3_204
-	bit	0, (ix - 123)
-	jr	nz, BB3_204
-	ld	hl, (ix - 101)
+	jr	z, BB0_206
+	ld	a, (ix - 73)
+	and	a, 4
+	ld	e, a
+	ld	hl, (ix - 60)
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	nz, BB3_204
+	jr	z, BB0_202
+	ld	a, e
+	or	a, a
+	jr	z, BB0_206
+BB0_202:
+	ld	a, e
+	or	a, a
+	ld	hl, _ship2_data
+	jr	z, BB0_204
+	ld	hl, _ship1_data
+BB0_204:
+	ld	de, (ix - 54)
+	push	de
+	ld	de, (ix - 24)
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite
+BB0_205:
+	pop	hl
+	pop	hl
+	pop	hl
+BB0_206:
+	scf
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	a, (ix - 39)
+	and	a, 1
+	bit	0, a
+	ld	hl, 10
+	push	hl
+	ld	hl, 2
+	push	hl
+	ld	hl, (ix - 66)
+	push	hl
+	ld	hl, (ix - 95)
+	push	hl
+	call	nz, _gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (ix - 31)
+	and	a, 1
+	bit	0, a
+	ld	hl, 10
+	push	hl
+	ld	hl, 2
+	push	hl
+	ld	hl, (ix - 63)
+	push	hl
+	ld	hl, (ix - 110)
+	push	hl
+	call	nz, _gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (ix - 35)
+	and	a, 1
+	bit	0, a
+	jr	nz, BB0_210
+	ld	hl, (ix - 30)
+	ld	a, l
+	or	a, a
+	jr	nz, BB0_210
+	ld	hl, (ix - 42)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_210
 	ld	hl, 125
 	push	hl
 	ld	hl, 150
@@ -1683,11 +1322,8 @@ BB3_200:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	de, (ix - 9)
-	ld	bc, -132
-	lea	hl, ix
-	add	hl, bc
-	ld	hl, (hl)
+	ld	hl, (ix - 27)
+	ld	de, (ix - 77)
 	or	a, a
 	sbc	hl, de
 	ld	hl, 110
@@ -1700,7 +1336,7 @@ BB3_200:
 	pop	hl
 	pop	hl
 	pop	hl
-BB3_204:
+BB0_210:
 	ld	hl, 19
 	push	hl
 	ld	hl, 10
@@ -1731,7 +1367,16 @@ BB3_204:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	hl, (ix - 101)
+	ld	bc, (ix - 42)
+	push	bc
+	pop	hl
+	ld	de, 10
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB0_213
+	push	bc
+	pop	hl
 	ld	bc, 3
 	call	__imulu
 	push	hl
@@ -1748,140 +1393,272 @@ BB3_204:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	hl, 10
+BB0_212:
+	ld	hl, 35
 	push	hl
-	pop	iy
-	ld	bc, (ix - 79)
-BB3_205:
-	lea	hl, iy
-	ld	de, 46
-	or	a, a
-	sbc	hl, de
-	jr	z, BB3_207
-	ld	(ix - 111), bc
-	ld	hl, (ix - 111)
-	ld	hl, (hl)
-	ld	bc, 3
-	call	__imulu
+	ld	hl, (ix - 57)
 	push	hl
-	pop	de
-	ld	hl, _scorenum_tiles_data
-	add	hl, de
-	ld	hl, (hl)
-	ld	de, 35
-	push	de
-	push	iy
-	push	hl
-	ld	(ix - 123), iy
-	call	_gfx_Sprite
+	call	_drawDigits
 	pop	hl
 	pop	hl
-	pop	hl
-	ld	iy, (ix - 111)
-	lea	iy, iy + 3
-	lea	bc, iy
-	ld	de, 6
-	ld	iy, (ix - 123)
-	add	iy, de
-	jr	BB3_205
-BB3_207:
-	ld	hl, 10
+	ld	hl, 89
 	push	hl
-	pop	iy
-	ld	bc, (ix - 82)
-BB3_208:
-	lea	hl, iy
-	ld	de, 46
-	or	a, a
-	sbc	hl, de
-	jr	z, BB3_210
-	ld	(ix - 111), bc
-	ld	hl, (ix - 111)
-	ld	hl, (hl)
-	ld	bc, 3
-	call	__imulu
+	ld	hl, (ix - 72)
 	push	hl
-	pop	de
-	ld	hl, _scorenum_tiles_data
-	add	hl, de
-	ld	hl, (hl)
-	ld	de, 89
-	push	de
-	push	iy
-	push	hl
-	ld	(ix - 123), iy
-	call	_gfx_Sprite
+	call	_drawDigits
 	pop	hl
 	pop	hl
-	pop	hl
-	ld	iy, (ix - 111)
-	lea	iy, iy + 3
-	lea	bc, iy
-	ld	de, 6
-	ld	iy, (ix - 123)
-	add	iy, de
-	jr	BB3_208
-BB3_210:
 	call	_gfx_SwapDraw
-	ld	hl, (ix - 58)
-	ld	(ix - 123), hl
-	ld	hl, (ix - 101)
-	ld	(ix - 111), hl
-	ld	de, -132
-	lea	hl, ix
+	ld	hl, (ix - 34)
+	ld	(ix - 83), hl
+	jp	BB0_7
+BB0_213:
+	ld	hl, (ix - 98)
+	push	hl
+	push	bc
+	call	_updateDigits
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	pop	bc
+BB0_214:
+	push	bc
+	pop	hl
+	ld	de, 5
+	or	a, a
+	sbc	hl, de
+	jr	z, BB0_217
+	ld	hl, (ix - 98)
+	add	hl, bc
+	ld	a, (hl)
+	or	a, a
+	jr	nz, BB0_217
+	inc	bc
+	jr	BB0_214
+BB0_217:
+	ld	hl, 37
+BB0_218:
+	ld	(ix - 80), hl
+	push	bc
+	pop	hl
+	ld	de, 6
+	or	a, a
+	sbc	hl, de
+	jr	z, BB0_212
+	ld	iy, (ix - 98)
+	add	iy, bc
+	or	a, a
+	sbc	hl, hl
+	ld	l, (iy)
+	ld	(ix - 83), bc
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _scorenum_tiles_data
 	add	hl, de
 	ld	hl, (hl)
-	ld	(ix - 58), hl
-	ld	hl, (ix - 108)
-	ld	(ix - 126), hl
-	ld	hl, (ix - 117)
-	ld	(ix - 108), hl
-	ld	bc, (ix - 85)
-	ld	iy, -720868
-	ld	de, (ix - 88)
-	jp	BB3_1
-BB3_211:
-	ld	iy, (ix - 72)
-	lea	hl, iy
+	ld	de, 188
+	push	de
+	ld	de, (ix - 80)
+	push	de
+	push	hl
+	call	_gfx_Sprite
+	ld	bc, (ix - 83)
+	pop	hl
+	pop	hl
+	pop	hl
+	inc	bc
+	ld	de, 6
+	ld	hl, (ix - 80)
+	add	hl, de
+	jr	BB0_218
+BB0_220:
+	ld	hl, (ix - 104)
 	ld	bc, 100
 	call	__imulu
-	ld	(ix - 3), bc
-	push	ix
-	ld	bc, -132
-	add	ix, bc
-	ld	de, (ix)
-	pop	ix
-	add	hl, de
-	xor	a, a
-	ld	(ix - 73), a
-	inc	a
-	ld	(ix - 105), a
-	ld	de, 0
-	push	ix
-	ld	bc, -129
-	add	ix, bc
-	ld	(ix), de
-	pop	ix
-	push	ix
-	ld	bc, -138
-	add	ix, bc
-	ld	(ix), de
-	pop	ix
-	push	ix
-	ld	de, -132
-	add	ix, de
-	ld	(ix), hl
-	pop	ix
-	ld	bc, (ix - 3)
-	jp	BB3_179
-BB3_212:
-	ld	hl, (ix - 9)
+	ld	bc, (ix - 27)
+	add	hl, bc
+	ld	a, 1
+	ld	c, a
+	ld	(ix - 21), bc
+	ld	(ix - 27), hl
+	jp	BB0_176
+BB0_221:
+	ld	hl, (ix - 51)
+	ld	de, (ix - 77)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB0_224
+	ld	(ix - 18), de
+	ld	hl, _.str.2
 	push	hl
-	call	_saveHighScore
+	ld	hl, _.str
+	push	hl
+	call	_ti_Open
+	ld	e, a
 	pop	hl
+	pop	hl
+	or	a, a
+	jr	z, BB0_224
+	ld	(ix - 21), de
+	push	de
+	ld	hl, 1
+	push	hl
+	ld	hl, 3
+	push	hl
+	pea	ix - 18
+	call	_ti_Write
+	pop	de
+	pop	de
+	pop	de
+	pop	de
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	ld	hl, (ix - 21)
+	push	hl
+	ld	hl, 1
+	push	hl
+	call	z, _ti_SetArchiveStatus
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 21)
+	push	hl
+	call	_ti_Close
+	pop	hl
+BB0_224:
 	call	_gfx_End
 	or	a, a
 	sbc	hl, hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	private	_spawnX
+_spawnX:
+	call	_rand
+	ld	bc, 177
+	call	__irems
+	ld	de, 127
+	add	hl, de
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	private	_updateDigits
+_updateDigits:
+	ld	hl, -6
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	iy, 5
+	ld	l, -10
+	ld	(ix - 3), hl
+BB2_1:
+	lea	hl, iy
+	ld	bc, 0
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB2_3
+	push	de
+	pop	hl
+	ld	bc, 10
+	call	__idivs
+	ld	(ix - 6), de
+	ld	de, (ix - 3)
+	ld	d, l
+	ld	(ix - 3), de
+	mlt	de
+	ld	a, e
+	lea	de, iy
+	ld	bc, (ix - 6)
+	add	a, c
+	ld	iy, (ix + 9)
+	add	iy, de
+	ld	(iy), a
+	dec	de
+	push	de
+	pop	iy
+	ex	de, hl
+	jr	BB2_1
+BB2_3:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	private	_drawExplosion
+_drawExplosion:
+	call	__frameset0
+	ld	a, (ix + 6)
+	cp	a, 7
+	jr	nc, BB3_2
+	ld	hl, _boom1_data
+	jr	BB3_3
+BB3_2:
+	ld	hl, _boom2_data
+BB3_3:
+	ld	de, (ix + 9)
+	ld	bc, (ix + 12)
+	cp	a, 13
+	jr	c, BB3_5
+	ld	hl, _boom3_data
+BB3_5:
+	ld	(ix + 6), hl
+	ld	(ix + 9), de
+	ld	(ix + 12), bc
+	pop	ix
+	jp	_gfx_TransparentSprite
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	private	_drawDigits
+_drawDigits:
+	ld	hl, -6
+	call	__frameset
+	ld	bc, (ix + 6)
+	ld	hl, 10
+BB4_1:
+	ld	de, 46
+	ld	(ix - 3), hl
+	or	a, a
+	sbc	hl, de
+	jr	z, BB4_3
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 6), bc
+	ld	iy, (ix - 6)
+	ld	l, (iy)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _scorenum_tiles_data
+	add	hl, de
+	ld	hl, (hl)
+	ld	de, (ix + 9)
+	push	de
+	ld	de, (ix - 3)
+	push	de
+	push	hl
+	call	_gfx_Sprite
+	ld	bc, (ix - 6)
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 3)
+	inc	bc
+	ld	de, 6
+	add	hl, de
+	jr	BB4_1
+BB4_3:
 	ld	sp, ix
 	pop	ix
 	ret
@@ -1987,21 +1764,6 @@ _scorenum_tile_8_data:
 _scorenum_tile_9_data:
 	db	"", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, "", 0, 0, 0, "", 0, "", 0
 
-	section	.rodata,"a",@progbits
-	private	_.str
-_.str:
-	db	"SHIPSAV", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.1
-_.str.1:
-	db	"r", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.2
-_.str.2:
-	db	"w", 0
-
 	section	.data,"aw",@progbits
 	public	_global_palette
 _global_palette:
@@ -2016,21 +1778,6 @@ _bg_data:
 	public	_enemy_data
 _enemy_data:
 	db	"""", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, "", 0, "								", 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "		", 0, 0, "	", 0, "", 0, "	", 0, 0, 0, "	", 0, 0, 0, 0, "	", 0, "						", 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0
-
-	section	.data,"aw",@progbits
-	public	_boom1_data
-_boom1_data:
-	db	"", 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, "	", 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, "			", 0, 0, 0, 0, "	", 10, "			", 0, 0, 0, 0, 0, "					", 0, 0, 0, "			", 0, 0, 0, "	", 10, 10, "			", 0, 0, 0, "				", 10, "	", 0, 0, 0, "							", 10, 10, "				", 0, "			", 10, 10, 10, "	", 0, 0, 0, "		", 10, "				", 10, 10, 10, "					", 10, 10, 10, 10, "		", 0, 0, 0, 0, "	", 10, 10, 10, "	", 10, 10, 10, 10, 10, "			", 10, 10, 10, 10, 10, "		", 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, "	", 10, 10, 10, 10, 10, 10, 10, "		", 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "				", 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "		", 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "				", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "	", 0, 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, "			", 10, 10, 10, "	", 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, "								", 10, "		", 0, 0, 0, 0, "			", 10, 10, "																", 0, 0, 0, "											", 0, 0, 0, 0, 0, "					", 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		"
-
-	section	.data,"aw",@progbits
-	public	_boom2_data
-_boom2_data:
-	db	"", 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, "		", 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, "						", 0, "				", 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, "							", 0, 0, 0, 0, 0, 0, 0, "									", 0, "						", 0, 0, 0, 0, 0, 0, 0, 0, "									", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0
-
-	section	.data,"aw",@progbits
-	public	_boom3_data
-_boom3_data:
-	db	"", 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, "	"
 
 	section	.data,"aw",@progbits
 	public	_ship1_data
@@ -2099,11 +1846,34 @@ _scorenum_tiles_data:
 	dl	_scorenum_tile_9_data
 
 	section	.rodata,"a",@progbits
-	private	_switch.table.main.3
-_switch.table.main.3:
-	dl	_boom1_data
-	dl	_boom2_data
-	dl	_boom3_data
+	private	_.str
+_.str:
+	db	"SHIPSAV", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1
+_.str.1:
+	db	"r", 0
+
+	section	.data,"aw",@progbits
+	public	_boom1_data
+_boom1_data:
+	db	"", 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, "	", 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, "			", 0, 0, 0, 0, "	", 10, "			", 0, 0, 0, 0, 0, "					", 0, 0, 0, "			", 0, 0, 0, "	", 10, 10, "			", 0, 0, 0, "				", 10, "	", 0, 0, 0, "							", 10, 10, "				", 0, "			", 10, 10, 10, "	", 0, 0, 0, "		", 10, "				", 10, 10, 10, "					", 10, 10, 10, 10, "		", 0, 0, 0, 0, "	", 10, 10, 10, "	", 10, 10, 10, 10, 10, "			", 10, 10, 10, 10, 10, "		", 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, "	", 10, 10, 10, 10, 10, 10, 10, "		", 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "				", 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "		", 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "				", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, "			", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "			", 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, "	", 0, 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, 10, 10, "			", 10, 10, 10, "	", 0, 0, 0, 0, 0, 0, "		", 10, 10, 10, 10, 10, 10, "								", 10, "		", 0, 0, 0, 0, "			", 10, 10, "																", 0, 0, 0, "											", 0, 0, 0, 0, 0, "					", 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		"
+
+	section	.data,"aw",@progbits
+	public	_boom3_data
+_boom3_data:
+	db	"", 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "	", 0, 0, 0, 0, 0, 0, 0, 0, "	"
+
+	section	.data,"aw",@progbits
+	public	_boom2_data
+_boom2_data:
+	db	"", 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, "		", 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, "						", 0, "				", 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "		", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "				", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0, 0, 0, "						", 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, "							", 0, 0, 0, 0, 0, 0, 0, "									", 0, "						", 0, 0, 0, 0, 0, 0, 0, 0, "									", 0, "					", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "							", 0, 0, 0, "			", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "			", 0, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2
+_.str.2:
+	db	"w", 0
 
 	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
 	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
@@ -2126,27 +1896,24 @@ _switch.table.main.3:
 	extern	_gfx_SetPalette
 	extern	_rand
 	extern	_ti_Close
-	extern	__ishl
 	extern	_ti_Read
 	extern	__idivs
 	extern	__setflag
-	extern	__iand
 	extern	_gfx_FillRectangle
 	extern	_ti_Open
 	extern	_gfx_Sprite
 	extern	__ineg
 	extern	__frameset
 	extern	_gfx_SetTransparentColor
-	extern	_ti_Delete
 	extern	_kb_Scan
 	extern	_ti_Write
 	extern	_gfx_SwapDraw
 	extern	_gfx_SetDraw
-	extern	_gfx_FillScreen
 	extern	__Unwind_SjLj_Unregister
 	extern	_ti_SetArchiveStatus
 	extern	__irems
 	extern	__imulu
 	extern	_gfx_SetColor
 	extern	_gfx_End
+	extern	__frameset0
 	extern	_gfx_TransparentSprite

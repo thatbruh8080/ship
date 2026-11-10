@@ -6,40 +6,66 @@
 #include "gfx/gfx.h"
 
 #define SAVE_FILE "SHIPSAV"
-void saveHighScore(int highScore);
+enum { LEFT_EDGE = 127, RIGHT_EDGE = 304, EXTRA_LIFE = 5000 };
+enum { PATROL, DIVE };
 
-/* convert score to digits */
-void updateDigits(int value, int digits[6])
+/* Zero means no explosion. Ticks 1 through 18 select the three sprites. */
+static void drawExplosion(unsigned char tick, int x, int y)
 {
-    for (int i = 5; i >= 0; i--) {
+    gfx_sprite_t *sprite = boom1;
+    if (tick > 12)
+        sprite = boom3;
+    else if (tick > 6)
+        sprite = boom2;
+    gfx_TransparentSprite(sprite, x, y);
+}
+
+static void updateDigits(int value, unsigned char digits[6])
+{
+    for (int i = 5; i >= 0; --i) {
         digits[i] = value % 10;
         value /= 10;
     }
 }
 
-void loadHighScore(int *highScore)
+static void drawDigits(const unsigned char digits[6], int y)
 {
-    ti_var_t file = ti_Open(SAVE_FILE, "r");
+    for (int i = 0; i < 6; ++i)
+        gfx_Sprite(scorenum_tiles[digits[i]], 10 + i * 6, y);
+}
 
+/* Both ships have a 16 x 14 hitbox. The enemy's starts one pixel lower. */
+static bool hitsShip(int x, int y, int width, int height, int shipX, int shipY)
+{
+    return x < shipX + 16 && x + width > shipX &&
+           y < shipY + 14 && y + height > shipY;
+}
+
+static int loadHighScore(void)
+{
+    int value = 10000;
+    ti_var_t file = ti_Open(SAVE_FILE, "r");
     if (file) {
-        ti_Read(highScore, sizeof(int), 1, file);
+        if (ti_Read(&value, sizeof(value), 1, file) != 1 || value < 0)
+            value = 10000;
         ti_Close(file);
-    } else {
-        *highScore = 10000;
+    }
+    return value;
+}
+
+static void saveHighScore(int value)
+{
+    ti_var_t file = ti_Open(SAVE_FILE, "w");
+    if (file) {
+        if (ti_Write(&value, sizeof(value), 1, file) == 1)
+            ti_SetArchiveStatus(true, file);
+        ti_Close(file);
     }
 }
 
-void saveHighScore(int highScore)
+static int spawnX(void)
 {
-    ti_Delete(SAVE_FILE);
-
-    ti_var_t file = ti_Open(SAVE_FILE, "w");
-
-    if (file) {
-        ti_Write(&highScore, sizeof(int), 1, file);
-        ti_SetArchiveStatus(true, file);
-        ti_Close(file);
-    }
+    return LEFT_EDGE + rand() % (RIGHT_EDGE - LEFT_EDGE);
 }
 
 int main(void)
@@ -47,7 +73,7 @@ int main(void)
     int x = 218;
     int y = 160;
     int bgScroll = 0;
-    int frame = 0;
+    unsigned char frame = 0;
 
     bool bulletActive = false;
     int bulletX = 0;
@@ -57,94 +83,68 @@ int main(void)
     int enemyBulletX = 0;
     int enemyBulletY = 0;
 
-    int enemyX = 207;
-    int enemyY = 35;
-    int enemyVX = 1; 
+    int enemyX = spawnX();
+    int enemyY = -20;
+    int enemyVX = 1;
     int enemyDir = 1;
 
     int multiplier = 1;
     int comboStreak = 0;
     int comboTimer = 0;
 
-    int enemyState = 0;
+    int enemyState = DIVE;
 
-    bool enemyAlive = true;
-    bool enemyExploding = false;
+    unsigned char enemyExplosion = 0;
 
     bool playerRespawning = false;
-    bool playerInvincible = false;
-
     int invincibleTimer = 0;
-
-    int explosionFrame = 0;
-    int explosionTimer = 0;
 
     int enemyDiveDelay = 0;
     int enemyShootingTime = 30;
 
     bool playerAlive = true;
-    bool playerExploding = false;
+    unsigned char playerExplosion = 0;
     int lives = 3;
 
-    int playerExplosionFrame = 0;
-    int playerExplosionTimer = 0;
-
-    /* SCORE SYSTEM */
-
     int scoreValue = 0;
-    int highScoreValue = 10000;
-    int nextLifeScore = 5000;
-
-    loadHighScore(&highScoreValue);
-
-    int scoreDigits[6] = {0,0,0,0,0,0};
-
-    int highDigits[6] = {0,0,0,0,0,0};
+    const int savedHigh = loadHighScore();
+    int highScoreValue = savedHigh;
+    int nextLifeScore = EXTRA_LIFE;
+    int displayedScore = 0;
+    unsigned char scoreDigits[6] = {0};
+    unsigned char highDigits[6];
+    updateDigits(highScoreValue, highDigits);
 
     gfx_Begin();
     gfx_SetPalette(global_palette, sizeof_global_palette, 0);
     gfx_SetTransparentColor(0);
     gfx_SetDrawBuffer();
 
-    enemyX = 127 + rand() % (304 - 127);
-    enemyY = -20;
-    enemyState = 1;
-
-    while (!kb_IsDown(kb_KeyClear))
-    {
+    while (true) {
         kb_Scan();
-        frame++;
+        if (kb_IsDown(kb_KeyClear))
+            break;
+        ++frame;
 
-        updateDigits(scoreValue, scoreDigits);
-        updateDigits(highScoreValue, highDigits);
-
-        if (!playerAlive && kb_IsDown(kb_Key2nd) && !playerRespawning && !playerExploding) {
-
-            if(lives == 0){
+        if (!playerAlive && kb_IsDown(kb_Key2nd) && !playerExplosion) {
+            if (lives == 0) {
                 scoreValue = 0;
                 lives = 3;
+                nextLifeScore = EXTRA_LIFE;
             }
 
             invincibleTimer = 180;
-            playerInvincible = true;
             playerRespawning = true;
             playerAlive = true;
 
-            x = 218;          /* center */
-            y = GFX_LCD_HEIGHT + 10;   /* start below screen */
-
+            x = 218;
+            y = GFX_LCD_HEIGHT + 10;
         }
 
-        /*Timer*/
-        if (playerInvincible) {
+        if (invincibleTimer > 0)
+            --invincibleTimer;
 
-            invincibleTimer--;
-
-            if (invincibleTimer <= 0)
-                playerInvincible = false;
-        }
-
-        /*Combo decay*/
+        /* Combo decay */
         if (comboTimer > 0) {
             comboTimer--;
         } else {
@@ -159,15 +159,14 @@ int main(void)
             if (kb_IsDown(kb_KeyRight)) x += 2;
         }
 
-        if (x < 127)
-            x = 127;
+        if (x < LEFT_EDGE)
+            x = LEFT_EDGE;
 
-        if (x > 304 - ship1_width)
-            x = 304 - ship1_width;
+        if (x > RIGHT_EDGE - ship1_width)
+            x = RIGHT_EDGE - ship1_width;
 
-        /*Flying up*/
+        /* Fly back in from below the screen. */
         if (playerRespawning) {
-
             y -= 4;
 
             if (y <= 160) {
@@ -187,7 +186,7 @@ int main(void)
         if (bulletActive) {
             bulletY -= 4;
 
-            if (bulletY < 0){
+            if (bulletY < 0) {
                 bulletActive = false;
 
                 comboStreak = 0;
@@ -197,19 +196,17 @@ int main(void)
 
         /* Enemy movement */
 
-        if (enemyAlive) {
-
-            if (enemyState == 0) {
-
+        if (!enemyExplosion) {
+            if (enemyState == PATROL) {
                 enemyX += enemyDir;
 
-                if (enemyX <= 127) {
-                    enemyX = 127;
+                if (enemyX <= LEFT_EDGE) {
+                    enemyX = LEFT_EDGE;
                     enemyDir = 1;
                 }
 
-                if (enemyX >= 304 - 16) {
-                    enemyX = 304 - 16;
+                if (enemyX >= RIGHT_EDGE - 16) {
+                    enemyX = RIGHT_EDGE - 16;
                     enemyDir = -1;
                 }
 
@@ -221,17 +218,13 @@ int main(void)
                     enemyDiveDelay--;
 
                     if (enemyDiveDelay == 0)
-                        enemyState = 1;
+                        enemyState = DIVE;
                 }
-            }
-
-            else if (enemyState == 1) {
-
+            } else {
                 enemyY += 3;
 
-                /* NORMAL behavior (chase player) */
-                if (playerAlive && !playerInvincible) {
-
+                /* Chase a vulnerable ship. */
+                if (playerAlive && !invincibleTimer) {
                     if (x > enemyX + 2)
                         enemyVX = 1;
                     else if (x < enemyX - 2)
@@ -240,26 +233,23 @@ int main(void)
                         enemyVX = 0;
                 }
 
-                /* SCARED behavior (run away + bounce) */
-                else if (playerInvincible) {
-
+                /* Flee a respawning ship. */
+                else if (invincibleTimer) {
                     if (x < enemyX)
                         enemyVX = 2;   // move right (away)
                     else if (x > enemyX)
                         enemyVX = -2;  // move left (away)
                 }
 
-                /* APPLY movement */
                 enemyX += enemyVX;
 
-                /* BOUNCE OFF WALLS */
-                if (enemyX <= 127) {
-                    enemyX = 127;
+                if (enemyX <= LEFT_EDGE) {
+                    enemyX = LEFT_EDGE;
                     enemyVX = -enemyVX;
                 }
 
-                if (enemyX >= 304 - 16) {
-                    enemyX = 304 - 16;
+                if (enemyX >= RIGHT_EDGE - 16) {
+                    enemyX = RIGHT_EDGE - 16;
                     enemyVX = -enemyVX;
                 }
 
@@ -268,7 +258,7 @@ int main(void)
 
                 if (enemyY >= 35 && enemyY < 38) {
                     enemyY = 35;
-                    enemyState = 0;
+                    enemyState = PATROL;
                     enemyDiveDelay = 0;
                 }
             }
@@ -276,7 +266,7 @@ int main(void)
 
         /* Enemy shooting */
 
-        if (enemyAlive && !enemyBulletActive && playerAlive && enemyShootingTime == 0 && !playerInvincible) {
+        if (!enemyExplosion && !enemyBulletActive && playerAlive && enemyShootingTime == 0 && !invincibleTimer) {
             enemyBulletActive = true;
             enemyBulletX = enemyX + 8;
             enemyBulletY = enemyY + 20;
@@ -286,7 +276,6 @@ int main(void)
             enemyShootingTime--;
 
         if (enemyBulletActive) {
-
             enemyBulletY += 4;
 
             if (enemyBulletY > GFX_LCD_HEIGHT) {
@@ -297,239 +286,106 @@ int main(void)
 
         /* Player bullet hits enemy */
 
-        if (bulletActive && enemyAlive) {
+        if (bulletActive && !enemyExplosion &&
+            hitsShip(bulletX, bulletY, 2, 10, enemyX, enemyY + 1)) {
+            bulletActive = false;
+            enemyExplosion = 1;
+            /* At 147 hits the multiplier reaches its cap of 50. */
+            if (comboStreak < 147)
+                ++comboStreak;
+            comboTimer = 180;
+            multiplier = 1 + comboStreak / 3;
+            scoreValue += 100 * multiplier;
+        }
 
-            int enemyHitX = enemyX;
-            int enemyHitY = enemyY + 1;
+        if (enemyExplosion && ++enemyExplosion > 18) {
+            enemyExplosion = 0;
+            enemyX = spawnX();
+            enemyY = -20;
+            enemyState = DIVE;
+            enemyDiveDelay = 0;
+        }
+        if (playerExplosion && ++playerExplosion > 18)
+            playerExplosion = 0;
 
-            if (bulletX < enemyHitX + 16 &&
-                bulletX + 2 > enemyHitX &&
-                bulletY < enemyHitY + 14 &&
-                bulletY + 10 > enemyHitY)
-            {
-                bulletActive = false;
+        bool playerHit = false;
+        if (enemyBulletActive && playerAlive && !invincibleTimer &&
+            hitsShip(enemyBulletX, enemyBulletY, 2, 10, x, y)) {
+            enemyBulletActive = false;
+            playerHit = true;
+        }
 
-                enemyAlive = false;
-                enemyExploding = true;
-
-                explosionFrame = 0;
-                explosionTimer = 0;
-
-                /* TEST SCORE */
-
-
-                comboStreak++;
-                comboTimer = 180;   // ~2 seconds at 60 FPS
-
-                /* smooth growth curve */
-                multiplier = 1 + comboStreak / 3;
-
-                /* optional soft cap (feels better than infinite explosion) */
-                if (multiplier > 50)
-                    multiplier = 50;
-
+        if (!playerHit && !enemyExplosion && playerAlive &&
+            hitsShip(enemyX, enemyY + 1, 16, 14, x, y)) {
+            enemyExplosion = 1;
+            if (invincibleTimer)
                 scoreValue += 100 * multiplier;
-
-                if (scoreValue >= nextLifeScore) {
-                    lives++;
-                    nextLifeScore += 5000;
-                }
-
-                if (scoreValue > highScoreValue) {
-                    highScoreValue = scoreValue;
-                }
-            }
+            else
+                playerHit = true;
         }
 
-        /* Enemy explosion */
-
-        if (enemyExploding) {
-
-            explosionTimer++;
-
-            if (explosionTimer > 5) {
-
-                explosionTimer = 0;
-                explosionFrame++;
-
-                if (explosionFrame >= 3) {
-
-                    enemyExploding = false;
-
-                    enemyAlive = true;
-
-                    /* random X between 127 and 304 */
-                    enemyX = 127 + rand() % (304 - 127);
-                    enemyY = -20;     /* start above screen */
-                    enemyState = 1;
-                    enemyDiveDelay = 0;
-
-                }
-            }
+        if (playerHit) {
+            --lives;
+            playerAlive = false;
+            playerExplosion = 1;
+            comboStreak = 0;
+            comboTimer = 0;
+            multiplier = 1;
         }
 
-        /* Player explosion */
-
-        if (playerExploding) {
-
-            playerExplosionTimer++;
-
-            if (playerExplosionTimer > 5) {
-
-                playerExplosionTimer = 0;
-                playerExplosionFrame++;
-
-                if (playerExplosionFrame >= 3)
-                    playerExploding = false;
+        /* Only split the score into decimal digits when it changes. */
+        if (scoreValue != displayedScore) {
+            displayedScore = scoreValue;
+            updateDigits(scoreValue, scoreDigits);
+            if (scoreValue > highScoreValue) {
+                highScoreValue = scoreValue;
+                for (int i = 0; i < 6; ++i)
+                    highDigits[i] = scoreDigits[i];
             }
-        }
-
-        /* Enemy bullet hits player */
-
-        if (enemyBulletActive && playerAlive && !playerInvincible) {
-
-            int playerHitX = x;
-            int playerHitY = y;
-
-            if (enemyBulletX < playerHitX + 16 &&
-                enemyBulletX + 2 > playerHitX &&
-                enemyBulletY < playerHitY + 14 &&
-                enemyBulletY + 10 > playerHitY)
-            {
-                enemyBulletActive = false;
-
-                comboStreak = 0;
-                multiplier = 1;
-                comboTimer = 0;
-
-                playerAlive = false;
-                playerExploding = true;
-
-                playerExplosionFrame = 0;
-                playerExplosionTimer = 0;
-                lives--;
-            }
-        }
-
-        /* Player / enemy collision */
-
-        if (enemyAlive && playerAlive && !playerExploding) {
-
-            int enemyHitX = enemyX;
-            int enemyHitY = enemyY + 1;
-
-            int playerHitX = x;
-            int playerHitY = y;
-
-            if (enemyHitX < playerHitX + 16 &&
-                enemyHitX + 16 > playerHitX &&
-                enemyHitY < playerHitY + 14 &&
-                enemyHitY + 14 > playerHitY)
-            {
-                if (playerInvincible) {
-                    enemyAlive = false;
-                    enemyExploding = true;
-
-                    explosionFrame = 0;
-                    explosionTimer = 0;
-
-                    scoreValue += 100 * multiplier;
-
-                } else {
-
-                    playerAlive = false;
-                    playerExploding = true;
-
-                    playerExplosionFrame = 0;
-                    playerExplosionTimer = 0;
-
-                    enemyAlive = false;
-                    enemyExploding = true;
-
-                    explosionFrame = 0;
-                    explosionTimer = 0;
-
-                    if (lives > 0){
-                        lives--;
-                    }
-
-                    /* reset combo */
-                    comboStreak = 0;
-                    multiplier = 1;
-                }
+            if (scoreValue >= nextLifeScore) {
+                ++lives;
+                nextLifeScore += EXTRA_LIFE;
             }
         }
 
         /* Background */
 
-        bgScroll --;
+        --bgScroll;
 
         if (bgScroll <= -bg_height)
             bgScroll = 0;
 
-        gfx_FillScreen(0);
-
+        /* The opaque scrolling tiles already cover the entire right strip. */
         int bgX = GFX_LCD_WIDTH - bg_width;
+        gfx_SetColor(0);
+        gfx_FillRectangle(0, 0, bgX, GFX_LCD_HEIGHT);
+        for (int top = -bgScroll - bg_height; top < GFX_LCD_HEIGHT; top += bg_height) {
+            if (top > -bg_height)
+                gfx_Sprite(bg, bgX, top);
+        }
 
-        for (int i = -bg_height; i < GFX_LCD_HEIGHT + bg_height; i += bg_height)
-            gfx_Sprite(bg, bgX, i - bgScroll);
-
-        /* Enemy */
-
-        if (enemyAlive)
+        if (enemyExplosion)
+            drawExplosion(enemyExplosion, enemyX, enemyY);
+        else
             gfx_TransparentSprite(enemy, enemyX, enemyY);
 
-        if (enemyExploding) {
-
-            if (explosionFrame == 0)
-                gfx_TransparentSprite(boom1, enemyX, enemyY);
-
-            if (explosionFrame == 1)
-                gfx_TransparentSprite(boom2, enemyX, enemyY);
-
-            if (explosionFrame == 2)
-                gfx_TransparentSprite(boom3, enemyX, enemyY);
-        }
-
-        /* Player */
-
-        if (playerAlive){
-
-            if (!playerInvincible || (frame & 4)) {
-
-                if (frame & 4)
-                    gfx_TransparentSprite(ship1, x, y);
-                else
-                    gfx_TransparentSprite(ship2, x, y);
-            }
-        }
-
-        if (playerExploding) {
-
-            if (playerExplosionFrame == 0)
-                gfx_TransparentSprite(boom1, x, y);
-
-            if (playerExplosionFrame == 1)
-                gfx_TransparentSprite(boom2, x, y);
-
-            if (playerExplosionFrame == 2)
-                gfx_TransparentSprite(boom3, x, y);
-        }
+        if (playerExplosion)
+            drawExplosion(playerExplosion, x, y);
+        else if (playerAlive && (!invincibleTimer || (frame & 4)))
+            gfx_TransparentSprite((frame & 4) ? ship1 : ship2, x, y);
 
         /* Bullets */
 
+        gfx_SetColor(255);
         if (bulletActive) {
-            gfx_SetColor(255);
             gfx_FillRectangle(bulletX, bulletY, 2, 10);
         }
 
         if (enemyBulletActive) {
-            gfx_SetColor(255);
             gfx_FillRectangle(enemyBulletX, enemyBulletY, 2, 10);
         }
 
-        if (!playerAlive && !playerExploding && lives == 0){
-
+        if (!playerAlive && !playerExplosion && lives == 0) {
             gfx_Sprite(gameova, 150, 125);
 
             if (scoreValue == highScoreValue)
@@ -543,24 +399,31 @@ int main(void)
         gfx_Sprite(score, 10, 19);
         gfx_Sprite(hiscore, 10, 73);
         gfx_Sprite(lifecounter, 10, 184);
-        gfx_Sprite(lifenum_tiles[lives], 37,188);
-
-        /* SCORE digits */
-
-        for (int i = 0; i < 6; i++) {
-            gfx_Sprite(scorenum_tiles[scoreDigits[i]], 10 + i * 6, 35);
+        /* Generated tilesets may expose their count. Otherwise only the
+           four indices used by the starting lives are known to exist. */
+#ifdef lifenum_num_tiles
+        const int lifeTileCount = lifenum_num_tiles;
+#else
+        const int lifeTileCount = 4;
+#endif
+        if (lives < lifeTileCount)
+            gfx_Sprite(lifenum_tiles[lives], 37, 188);
+        else {
+            unsigned char digits[6];
+            updateDigits(lives, digits);
+            int first = 0;
+            while (first < 5 && digits[first] == 0)
+                ++first;
+            for (int i = first; i < 6; ++i)
+                gfx_Sprite(scorenum_tiles[digits[i]], 37 + 6 * (i - first), 188);
         }
-
-        /* HIGH SCORE digits */
-
-        for (int i = 0; i < 6; i++) {
-            gfx_Sprite(scorenum_tiles[highDigits[i]], 10 + i * 6, 89);
-        }
-
+        drawDigits(scoreDigits, 35);
+        drawDigits(highDigits, 89);
         gfx_SwapDraw();
     }
 
-    saveHighScore(highScoreValue);
+    if (highScoreValue > savedHigh)
+        saveHighScore(highScoreValue);
     gfx_End();
     return 0;
 }
